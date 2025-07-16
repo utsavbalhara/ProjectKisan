@@ -8,10 +8,12 @@ struct FeedView: View {
             VStack {
                 Text("Farms")
                     .font(.largeTitle)
+                    .foregroundColor(Color.farmColors.textPrimary)
                     .padding()
                 
                 Spacer()
             }
+            .background(Color.farmColors.backgroundLight)
             .navigationTitle("Farms")
         }
     }

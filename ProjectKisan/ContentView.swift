@@ -8,26 +8,22 @@
 import SwiftUI
 
 struct ContentView: View {
-    @State private var search = ""
-    
     var body: some View {
         TabView {
+            Tab("Farms", systemImage: "leaf.fill") {
+                FeedView()
+            }
             Tab("Disease", systemImage: "cross.case.fill") {
                 HomeView()
             }
-            Tab("Farms", systemImage: "leaf.fill") {
-                FeedView()
+            Tab("Marketplace", systemImage: "storefront.fill") {
+                MarketplaceView()
             }
             Tab("Profile", systemImage: "person.fill") {
                 RecipesView()
             }
-            Tab("Search", systemImage: "magnifyingglass", role: .search) {
-                NavigationStack {
-                    SearchView()
-                }
-            }
         }
-        .searchable(text: $search)
+        .tint(Color.farmColors.primary)
     }
 }
 

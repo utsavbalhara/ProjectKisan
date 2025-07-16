@@ -10,10 +10,11 @@ struct NewRecipeCard: View {
                         Text("Identify Crop Disease")
                             .font(.headline)
                             .fontWeight(.semibold)
+                            .foregroundColor(Color.farmColors.textPrimary)
                         
                         Text("Take a photo of any crop leaf.\nAn advanced ML model will analyze it on device instantly.")
                             .font(.subheadline)
-                            .foregroundColor(.secondary)
+                            .foregroundColor(Color.farmColors.textSecondary)
                             .multilineTextAlignment(.leading)
                             .frame(width:250, alignment: .leading)
                             .fixedSize(horizontal: false, vertical: true)
@@ -45,8 +46,8 @@ struct NewRecipeCard: View {
                         .background(
                             LinearGradient(
                                 stops: [
-                                    Gradient.Stop(color: Color(red: 0.9, green: 0.45, blue: 0.18), location: 0.00),
-                                    Gradient.Stop(color: Color(red: 1, green: 0.64, blue: 0.42), location: 1.00),
+                                    Gradient.Stop(color: Color.farmColors.primary, location: 0.00),
+                                    Gradient.Stop(color: Color.farmColors.primaryLight, location: 1.00),
                                 ],
                                 startPoint: UnitPoint(x: 0.06, y: 0.2),
                                 endPoint: UnitPoint(x: 1, y: 0.78)
@@ -77,7 +78,7 @@ struct NewRecipeCard: View {
             }
         }
         .frame(maxWidth: .infinity, maxHeight: 180)
-        .background(Color(.systemBackground))
+        .background(Color.farmColors.surface)
         .clipShape(RoundedRectangle(cornerRadius: 22))
         .padding(.horizontal)
     }
@@ -85,5 +86,5 @@ struct NewRecipeCard: View {
 
 #Preview {
     NewRecipeCard()
-        .background(Color(hex: "e6ebe7"))
+        .background(Color.farmColors.backgroundLight)
 }

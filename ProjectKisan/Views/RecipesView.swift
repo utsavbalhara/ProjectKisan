@@ -8,10 +8,12 @@ struct RecipesView: View {
             VStack {
                 Text("Profile")
                     .font(.largeTitle)
+                    .foregroundColor(Color.farmColors.textPrimary)
                     .padding()
                 
                 Spacer()
             }
+            .background(Color.farmColors.backgroundLight)
             .navigationTitle("Profile")
         }
     }
