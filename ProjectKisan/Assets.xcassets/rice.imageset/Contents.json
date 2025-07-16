@@ -1,0 +1,23 @@
+{
+  "images" : [
+    {
+      "filename" : "field-of-growing-rice-plants-green-paddy-cultivation-of-important-crops-of-thailand-free-photo@1x.png",
+      "idiom" : "universal",
+      "scale" : "1x"
+    },
+    {
+      "filename" : "field-of-growing-rice-plants-green-paddy-cultivation-of-important-crops-of-thailand-free-photo@2x.png",
+      "idiom" : "universal",
+      "scale" : "2x"
+    },
+    {
+      "filename" : "field-of-growing-rice-plants-green-paddy-cultivation-of-important-crops-of-thailand-free-photo@3x.png",
+      "idiom" : "universal",
+      "scale" : "3x"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}

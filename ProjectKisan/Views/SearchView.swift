@@ -12,7 +12,6 @@ struct SearchView: View {
             
             Spacer()
         }
-        .background(Color.farmColors.backgroundLight)
         .navigationTitle("Search")
         .searchable(text: $viewModel.searchText)
     }

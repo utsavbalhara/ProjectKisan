@@ -5,15 +5,14 @@ struct FeedView: View {
     
     var body: some View {
         NavigationStack {
-            VStack {
-                Text("Farms")
-                    .font(.largeTitle)
-                    .foregroundColor(Color.farmColors.textPrimary)
-                    .padding()
-                
-                Spacer()
+            ScrollView {
+                VStack(spacing: 16) {
+                    ForEach(viewModel.farms) { farm in
+                        FarmCard(farm: farm)
+                    }
+                }
+                .padding()
             }
-            .background(Color.farmColors.backgroundLight)
             .navigationTitle("Farms")
         }
     }

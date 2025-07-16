@@ -86,5 +86,4 @@ struct NewRecipeCard: View {
 
 #Preview {
     NewRecipeCard()
-        .background(Color.farmColors.backgroundLight)
 }

@@ -13,7 +13,6 @@ struct HomeView: View {
                 .padding(.vertical)
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .background(Color.farmColors.backgroundLight)
             .navigationTitle("Disease")
         }
     }

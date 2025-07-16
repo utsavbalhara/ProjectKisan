@@ -13,7 +13,6 @@ struct RecipesView: View {
                 
                 Spacer()
             }
-            .background(Color.farmColors.backgroundLight)
             .navigationTitle("Profile")
         }
     }
