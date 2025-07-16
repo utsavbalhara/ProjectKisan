@@ -5,15 +5,30 @@ struct HomeView: View {
     
     var body: some View {
         NavigationStack {
-            ScrollView {
-                VStack(spacing: 16) {
-                    NewRecipeCard()
-                        .frame(height: 180)
+            ZStack {
+                // Consistent background
+                LinearGradient(
+                    colors: [
+                        Color.farmColors.backgroundLight,
+                        Color.farmColors.backgroundMedium.opacity(0.3),
+                        Color.farmColors.backgroundLight
+                    ],
+                    startPoint: .top,
+                    endPoint: .bottom
+                )
+                .ignoresSafeArea()
+                
+                ScrollView {
+                    VStack(spacing: 20) {
+                        NewRecipeCard()
+                            .frame(height: 200)
+                    }
+                    .padding(.vertical, 20)
+                    .padding(.horizontal)
                 }
-                .padding(.vertical)
             }
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .navigationTitle("Disease")
+            .navigationTitle("Disease Detection")
+            .toolbarBackground(.ultraThinMaterial, for: .navigationBar)
         }
     }
 }

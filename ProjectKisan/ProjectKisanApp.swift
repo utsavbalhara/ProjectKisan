@@ -11,7 +11,7 @@ import SwiftUI
 struct ProjectKisanApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            SplashScreenView()
         }
     }
 }
