@@ -20,29 +20,7 @@ struct SuggestedProductsView: View {
                 
                 ScrollView {
                     VStack(spacing: 16) {
-                        // Header Section
-                        VStack(spacing: 8) {
-                            Image(systemName: "cart.fill")
-                                .font(.system(size: 48))
-                                .foregroundStyle(
-                                    LinearGradient(
-                                        colors: [Color.farmColors.primary, Color.farmColors.primaryLight],
-                                        startPoint: .topLeading,
-                                        endPoint: .bottomTrailing
-                                    )
-                                )
-                            
-                            Text("Suggested Products")
-                                .font(.title2)
-                                .fontWeight(.bold)
-                                .foregroundColor(Color.farmColors.textPrimary)
-                            
-                            Text("AI-recommended products based on your farm's current conditions")
-                                .font(.caption)
-                                .foregroundColor(Color.farmColors.textSecondary)
-                                .multilineTextAlignment(.center)
-                        }
-                        .padding(.vertical, 20)
+                        
                         
                         // Products List
                         LazyVStack(spacing: 16) {
