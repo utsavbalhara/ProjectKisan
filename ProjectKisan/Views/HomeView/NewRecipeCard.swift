@@ -1,6 +1,12 @@
 import SwiftUI
 
 struct NewRecipeCard: View {
+    @State private var showPhotoLibrary = false
+    @State private var showCamera = false
+    @State private var selectedImage: UIImage?
+    @State private var showFullScreenImage = false
+    @State private var showImageSourceActionSheet = false
+    
     var body: some View {
         // New Recipe Card
         ZStack {
@@ -12,7 +18,7 @@ struct NewRecipeCard: View {
                             .fontWeight(.semibold)
                             .foregroundColor(Color.farmColors.textPrimary)
                         
-                        Text("Take a photo of any crop leaf.\nAn advanced ML model will analyze it on device instantly.")
+                        Text("Take a photo of any crop leaf.\nAn advanced ML model\nwill analyze it on device.")
                             .font(.subheadline)
                             .foregroundColor(Color.farmColors.textSecondary)
                             .multilineTextAlignment(.leading)
@@ -27,7 +33,7 @@ struct NewRecipeCard: View {
                 HStack {
                     // Start sizzling button
                     Button(action: {
-                        
+                        showImageSourceActionSheet = true
                     }) {
                         HStack(alignment: .center, spacing: 6) {
                             Image(systemName: "camera.fill")
@@ -57,6 +63,15 @@ struct NewRecipeCard: View {
                         .glassEffect(.regular.tint(Color.farmColors.primary).interactive())
                     }
                     .buttonStyle(.plain)
+                    .confirmationDialog("Select Image", isPresented: $showImageSourceActionSheet, titleVisibility: .hidden) {
+                        Button("Camera") {
+                            showCamera = true
+                        }
+                        Button("Photo Library") {
+                            showPhotoLibrary = true
+                        }
+                        Button("Cancel", role: .cancel) { }
+                    }
                     
                     Spacer()
                 }
@@ -81,6 +96,23 @@ struct NewRecipeCard: View {
         .background(Color.farmColors.surface)
         .clipShape(RoundedRectangle(cornerRadius: 22))
         .padding(.horizontal)
+        .sheet(isPresented: $showPhotoLibrary) {
+            ImagePickerView(selectedImage: $selectedImage, sourceType: .photoLibrary)
+        }
+        .sheet(isPresented: $showCamera) {
+            ImagePickerView(selectedImage: $selectedImage, sourceType: .camera)
+                .ignoresSafeArea()
+        }
+        .sheet(isPresented: $showFullScreenImage) {
+            if let image = selectedImage {
+                FullScreenImageView(image: image)
+            }
+        }
+        .onChange(of: selectedImage) { _, newImage in
+            if newImage != nil {
+                showFullScreenImage = true
+            }
+        }
     }
 }
 
