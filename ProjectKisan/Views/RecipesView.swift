@@ -68,7 +68,6 @@ struct RecipesView: View {
                 .padding(.top, 40)
             }
             .navigationTitle("Profile")
-            .toolbarBackground(.ultraThinMaterial, for: .navigationBar)
         }
     }
 }

@@ -28,7 +28,6 @@ struct FeedView: View {
                 }
             }
             .navigationTitle("Farms")
-            .toolbarBackground(.ultraThinMaterial, for: .navigationBar)
         }
     }
 }

@@ -22,13 +22,12 @@ struct HomeView: View {
                     VStack(spacing: 20) {
                         NewRecipeCard()
                             .frame(height: 200)
+                            .shadow(color: Color.black.opacity(0.05), radius: 6)
                     }
-                    .padding(.vertical, 20)
-                    .padding(.horizontal)
+                    .padding(.vertical, 0)
                 }
             }
             .navigationTitle("Disease Detection")
-            .toolbarBackground(.ultraThinMaterial, for: .navigationBar)
         }
     }
 }

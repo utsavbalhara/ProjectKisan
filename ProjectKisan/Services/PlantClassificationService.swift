@@ -59,9 +59,9 @@ class PlantClassificationService {
                     diseaseName = "Unknown"
                 }
                 
-                // Clean up the names (trim whitespace and add spacing for camelCase)
+                // Clean up the names
                 cropName = self.cleanupName(cropName)
-                diseaseName = self.cleanupName(diseaseName)
+                diseaseName = self.cleanupDiseaseName(diseaseName)
             }
             let confidence = Double(topResult.confidence)
             
@@ -92,8 +92,21 @@ class PlantClassificationService {
         // Trim whitespace
         var cleaned = name.trimmingCharacters(in: .whitespacesAndNewlines)
         
-        // Add spaces before capital letters for camelCase (e.g., "BlackRust" -> "Black Rust")
+        // Add spaces before capital letters for camelCase (e.g., "TomatoPlant" -> "Tomato Plant")
         cleaned = cleaned.replacingOccurrences(of: "([a-z])([A-Z])", with: "$1 $2", options: .regularExpression)
+        
+        return cleaned
+    }
+    
+    private func cleanupDiseaseName(_ name: String) -> String {
+        // Replace anything except letters with space
+        var cleaned = name.replacingOccurrences(of: "[^a-zA-Z]", with: " ", options: .regularExpression)
+        
+        // Reduce multiple spaces to single space
+        cleaned = cleaned.replacingOccurrences(of: " +", with: " ", options: .regularExpression)
+        
+        // Remove leading and trailing spaces
+        cleaned = cleaned.trimmingCharacters(in: .whitespacesAndNewlines)
         
         return cleaned
     }

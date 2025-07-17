@@ -37,17 +37,17 @@ struct FullScreenImageView: View {
                         } else if let classification = classification {
                             VStack(alignment: .leading) {
                                 Text(classification.cropName)
-                                    .font(.largeTitle)
+                                    .font(.system(.largeTitle, design: .rounded))
                                     .fontWeight(.bold)
                                 
                                 if classification.isHealthy {
                                     Text("Healthy")
-                                        .font(.title)
+                                        .font(.system(.title, design: .rounded))
                                         .fontWeight(.bold)
                                         .foregroundColor(.green)
                                 } else {
                                     Text(classification.diseaseName)
-                                        .font(.title)
+                                        .font(.system(.title, design: .rounded))
                                         .fontWeight(.bold)
                                         .foregroundColor(.orange)
                                     Text("Scientific name placeholder")

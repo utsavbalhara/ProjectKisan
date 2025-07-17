@@ -73,7 +73,6 @@ struct MarketplaceView: View {
                 .padding(.top, 40)
             }
             .navigationTitle("Marketplace")
-            .toolbarBackground(.ultraThinMaterial, for: .navigationBar)
         }
     }
 }
