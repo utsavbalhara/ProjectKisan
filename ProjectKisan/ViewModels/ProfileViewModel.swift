@@ -19,10 +19,64 @@ struct ProfileData {
         self.lastUpdated = Date()
         
         // Sample farm data
+        let sampleWeatherData1 = WeatherData(
+            temperature: 28.5,
+            precipitation: 2.3,
+            windSpeed: 12.4,
+            windDirection: "NW",
+            humidity: 65.2,
+            hoursOfSunshine: 7.5
+        )
+        
+        let sampleWeatherData2 = WeatherData(
+            temperature: 31.2,
+            precipitation: 0.8,
+            windSpeed: 8.7,
+            windDirection: "SE",
+            humidity: 72.1,
+            hoursOfSunshine: 8.2
+        )
+        
+        let sampleWeatherData3 = WeatherData(
+            temperature: 29.8,
+            precipitation: 1.5,
+            windSpeed: 15.2,
+            windDirection: "E",
+            humidity: 68.9,
+            hoursOfSunshine: 6.8
+        )
+        
+        let sampleIoTData1 = IoTSensorData(
+            soilMoisture: 45.2,
+            soilTemperature: 24.3,
+            soilPH: 6.8,
+            airTemperature: 28.5,
+            humidity: 65.2,
+            nutrientLevels: "Good - NPK levels balanced"
+        )
+        
+        let sampleIoTData2 = IoTSensorData(
+            soilMoisture: 78.5,
+            soilTemperature: 26.1,
+            soilPH: 7.2,
+            airTemperature: 31.2,
+            humidity: 72.1,
+            nutrientLevels: "Excellent - Rich in nitrogen"
+        )
+        
+        let sampleIoTData3 = IoTSensorData(
+            soilMoisture: 52.3,
+            soilTemperature: 25.7,
+            soilPH: 6.5,
+            airTemperature: 29.8,
+            humidity: 68.9,
+            nutrientLevels: "Fair - Needs phosphorus boost"
+        )
+        
         self.farms = [
-            Farm(typeOfCrop: "Wheat", areaInAcres: 2.5, currentStage: .harvesting),
-            Farm(typeOfCrop: "Rice", areaInAcres: 1.8, currentStage: .irrigation),
-            Farm(typeOfCrop: "Sugarcane", areaInAcres: 3.2, currentStage: .cropManagement)
+            Farm(typeOfCrop: "Wheat", areaInAcres: 2.5, currentStage: .harvesting, weatherData: sampleWeatherData1, iotSensorData: sampleIoTData1),
+            Farm(typeOfCrop: "Rice", areaInAcres: 1.8, currentStage: .irrigation, weatherData: sampleWeatherData2, iotSensorData: sampleIoTData2),
+            Farm(typeOfCrop: "Sugarcane", areaInAcres: 3.2, currentStage: .cropManagement, weatherData: sampleWeatherData3, iotSensorData: sampleIoTData3)
         ]
         
         // Calculate earnings and revenue based on farms
