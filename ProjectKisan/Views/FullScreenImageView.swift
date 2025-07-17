@@ -4,14 +4,14 @@ struct FullScreenImageView: View {
     let image: UIImage
     @Environment(\.dismiss) private var dismiss
     @State private var expandedCards: Set<String> = []
-    @State private var classification: PlantClassification?
+    @State private var analysisResult: AnalysisResult?
     @State private var isClassifying = true
+    @State private var classificationError: String?
 
     var body: some View {
         NavigationView {
             ScrollView {
                 VStack(spacing: 20) {
-                    // Plant Image
                     Image(uiImage: image)
                         .resizable()
                         .aspectRatio(contentMode: .fit)
@@ -20,441 +20,231 @@ struct FullScreenImageView: View {
                         .shadow(radius: 2)
                         .padding(.horizontal, 20)
 
-                    // Plant and Disease Information
-                    VStack(spacing: 16) {
-                        if isClassifying {
-                            VStack(alignment: .leading) {
-                                Text("Analyzing...")
-                                    .font(.largeTitle)
-                                    .fontWeight(.bold)
-                                Text("Please wait")
-                                    .font(.title)
-                                    .fontWeight(.bold)
-                                    .foregroundColor(.secondary)
-                                ProgressView()
-                                    .padding(.top, 8)
-                            }
-                        } else if let classification = classification {
-                            VStack(alignment: .leading) {
-                                Text(classification.cropName)
-                                    .font(.system(.largeTitle, design: .rounded))
-                                    .fontWeight(.bold)
-                                
-                                if classification.isHealthy {
-                                    Text("Healthy")
-                                        .font(.system(.title, design: .rounded))
-                                        .fontWeight(.bold)
-                                        .foregroundColor(.green)
-                                } else {
-                                    Text(classification.diseaseName)
-                                        .font(.system(.title, design: .rounded))
-                                        .fontWeight(.bold)
-                                        .foregroundColor(.orange)
-                                    Text("Scientific name placeholder")
-                                        .font(.subheadline)
-                                        .foregroundColor(.secondary)
-                                        .italic()
-                                }
-                                
-                                Text("(\(classification.confidencePercentage) Confidence)")
-                                    .font(.subheadline)
-                                    .foregroundColor(.secondary)
-                            }
-                        }
+                    if isClassifying {
+                        analysisInProgressView
+                    } else if let result = analysisResult {
+                        analysisResultView(for: result)
+                    } else if let error = classificationError {
+                        errorView(error)
                     }
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .padding(.horizontal, 20)
-
-                    // Quick Summary
-                    Text("Late blight detected on leaves. Immediate treatment recommended to prevent spread to fruits and neighboring plants.")
-                        .font(.body)
-                        .padding(.horizontal, 20)
-                        .foregroundColor(.secondary)
-                    // Treatment Steps Card
-                    VStack(alignment: .leading, spacing: 16) {
-                        Text("Treatment Steps")
-                            .font(.subheadline)
-                            .fontWeight(.semibold)
-                            .foregroundColor(.secondary)
-                            .textCase(.uppercase)
-                            .frame(maxWidth: .infinity, alignment: .leading)
-
-                        VStack(alignment: .leading, spacing: 16) {
-                            HStack(alignment: .top) {
-                                Text("1.")
-                                    .fontWeight(.bold)
-                                    .foregroundColor(.blue)
-                                VStack(alignment: .leading, spacing: 2) {
-                                    Text("Remove infected leaves")
-                                        .fontWeight(.medium)
-                                    Text("Dispose safely - do not compost")
-                                        .font(.footnote)
-                                        .foregroundColor(.secondary)
-                                }
-                                Spacer()
-                            }
-
-                            HStack(alignment: .top) {
-                                Text("2.")
-                                    .fontWeight(.bold)
-                                    .foregroundColor(.blue)
-                                VStack(alignment: .leading, spacing: 2) {
-                                    Text("Apply fungicide")
-                                        .fontWeight(.medium)
-                                    Text("Copper-based, every 7-10 days")
-                                        .font(.footnote)
-                                        .foregroundColor(.secondary)
-                                }
-                                Spacer()
-                            }
-
-                            HStack(alignment: .top) {
-                                Text("3.")
-                                    .fontWeight(.bold)
-                                    .foregroundColor(.blue)
-                                VStack(alignment: .leading, spacing: 2) {
-                                    Text("Improve air circulation")
-                                        .fontWeight(.medium)
-                                    Text("Prune lower branches, space plants")
-                                        .font(.footnote)
-                                        .foregroundColor(.secondary)
-                                }
-                                Spacer()
-                            }
-
-                            HStack(alignment: .top) {
-                                Text("4.")
-                                    .fontWeight(.bold)
-                                    .foregroundColor(.blue)
-                                VStack(alignment: .leading, spacing: 2) {
-                                    Text("Water management")
-                                        .fontWeight(.medium)
-                                    Text("Water at soil level, avoid wetting leaves")
-                                        .font(.footnote)
-                                        .foregroundColor(.secondary)
-                                }
-                                Spacer()
-                            }
-                        }
-                    }
-                    .padding(20)
-                    .frame(maxWidth: .infinity)
-                    .background(Color(.systemBackground))
-                    .clipShape(RoundedRectangle(cornerRadius: 22))
-                    .padding(.horizontal, 20)
-
-                    // Recommended Products Card
-                    VStack(alignment: .leading, spacing: 16) {
-                        Text("Recommended Products")
-                            .font(.subheadline)
-                            .fontWeight(.semibold)
-                            .foregroundColor(.secondary)
-                            .textCase(.uppercase)
-                            .frame(maxWidth: .infinity, alignment: .leading)
-
-                        VStack(spacing: 12) {
-                            HStack {
-                                VStack(alignment: .leading) {
-                                    Text("Copper Fungicide Spray")
-                                        .fontWeight(.medium)
-                                    Text("Mix 2 tbsp per gallon")
-                                        .font(.footnote)
-                                        .foregroundColor(.secondary)
-                                }
-                                Spacer()
-                                Text("$12-18")
-                                    .fontWeight(.medium)
-                            }
-
-                            HStack {
-                                VStack(alignment: .leading) {
-                                    Text("Neem Oil Solution")
-                                        .fontWeight(.medium)
-                                    Text("Apply weekly as prevention")
-                                        .font(.footnote)
-                                        .foregroundColor(.secondary)
-                                }
-                                Spacer()
-                                Text("$8-15")
-                                    .fontWeight(.medium)
-                            }
-
-                            HStack {
-                                VStack(alignment: .leading) {
-                                    Text("Potassium Bicarbonate")
-                                        .fontWeight(.medium)
-                                    Text("1 tsp per quart water")
-                                        .font(.footnote)
-                                        .foregroundColor(.secondary)
-                                }
-                                Spacer()
-                                Text("$5-10")
-                                    .fontWeight(.medium)
-                            }
-                        }
-                    }
-                    .padding(20)
-                    .frame(maxWidth: .infinity)
-                    .background(Color(.systemBackground))
-                    .clipShape(RoundedRectangle(cornerRadius: 22))
-                    .padding(.horizontal, 20)
-
-                    // About This Disease Card
-                    VStack(alignment: .leading, spacing: 16) {
-                        Button {
-                            withAnimation(.easeInOut(duration: 0.3)) {
-                                if expandedCards.contains("about") {
-                                    expandedCards.remove("about")
-                                } else {
-                                    expandedCards.insert("about")
-                                }
-                            }
-                        } label: {
-                            VStack(alignment: .leading, spacing: 16) {
-                            HStack {
-                                Text("About This Disease")
-                                    .font(.subheadline)
-                                    .fontWeight(.semibold)
-                                    .foregroundColor(.secondary)
-                                    .textCase(.uppercase)
-                                Spacer()
-                                Image(systemName: expandedCards.contains("about") ? "chevron.down" : "chevron.forward")
-                                    .foregroundColor(Color(uiColor: UIColor.tertiaryLabel))
-                                    .font(.system(size: 14, weight: .semibold))
-                            }
-
-                        Text("Late blight is one of the most destructive diseases of tomatoes and potatoes. It can destroy entire crops within days under favorable conditions.")
-                            .font(.body)
-                            .foregroundColor(.secondary)
-
-                        if expandedCards.contains("about") {
-                            VStack(alignment: .leading, spacing: 12) {
-                                HStack {
-                                    Text("Type")
-                                        .fontWeight(.medium)
-                                    Spacer()
-                                    Text("Fungal-like pathogen")
-                                        .foregroundColor(.secondary)
-                                }
-
-                                HStack {
-                                    Text("Spreads By")
-                                        .fontWeight(.medium)
-                                    Spacer()
-                                    Text("Wind, water, infected soil")
-                                        .foregroundColor(.secondary)
-                                }
-
-                                HStack {
-                                    Text("Favorable Conditions")
-                                        .fontWeight(.medium)
-                                    Spacer()
-                                    Text("Cool, wet (60-70°F)")
-                                        .foregroundColor(.secondary)
-                                }
-
-                            }
-                        }
-                            }
-                        }
-                        .buttonStyle(PlainButtonStyle())
-                    }
-                    .padding(20)
-                    .frame(maxWidth: .infinity, maxHeight: expandedCards.contains("about") ? nil : 400)
-                    .background(Color(.systemBackground))
-                    .clipShape(RoundedRectangle(cornerRadius: 22))
-                    .padding(.horizontal, 20)
-
-                    // Prevention Tips Card
-                    VStack(alignment: .leading, spacing: 16) {
-                        Button {
-                            withAnimation(.easeInOut(duration: 0.3)) {
-                                if expandedCards.contains("prevention") {
-                                    expandedCards.remove("prevention")
-                                } else {
-                                    expandedCards.insert("prevention")
-                                }
-                            }
-                        } label: {
-                            VStack(alignment: .leading, spacing: 16) {
-                            HStack {
-                                Text("Prevention Tips")
-                                    .font(.subheadline)
-                                    .fontWeight(.semibold)
-                                    .foregroundColor(.secondary)
-                                    .textCase(.uppercase)
-                                Spacer()
-                                Image(systemName: expandedCards.contains("prevention") ? "chevron.down" : "chevron.forward")
-                                    .foregroundColor(Color(uiColor: UIColor.tertiaryLabel))
-                                    .font(.system(size: 14, weight: .semibold))
-                            }
-
-                        if expandedCards.contains("prevention") {
-                            VStack(alignment: .leading, spacing: 16) {
-                                HStack(alignment: .top) {
-                                    Image(systemName: "drop.fill")
-                                        .foregroundColor(.blue)
-                                        .frame(width: 20)
-                                    VStack(alignment: .leading, spacing: 2) {
-                                        Text("Proper Watering")
-                                            .fontWeight(.medium)
-                                        Text("Water at soil level, avoid wetting leaves especially in evening")
-                                            .font(.footnote)
-                                            .foregroundColor(.secondary)
-                                    }
-                                    Spacer()
-                                }
-
-                                HStack(alignment: .top) {
-                                    Image(systemName: "wind")
-                                        .foregroundColor(.mint)
-                                        .frame(width: 20)
-                                    VStack(alignment: .leading, spacing: 2) {
-                                        Text("Air Circulation")
-                                            .fontWeight(.medium)
-                                        Text("Space plants adequately and prune lower branches")
-                                            .font(.footnote)
-                                            .foregroundColor(.secondary)
-                                    }
-                                    Spacer()
-                                }
-
-                                HStack(alignment: .top) {
-                                    Image(systemName: "leaf.fill")
-                                        .foregroundColor(.green)
-                                        .frame(width: 20)
-                                    VStack(alignment: .leading, spacing: 2) {
-                                        Text("Crop Rotation")
-                                            .fontWeight(.medium)
-                                        Text("Rotate crops yearly to break disease cycles")
-                                            .font(.footnote)
-                                            .foregroundColor(.secondary)
-                                    }
-                                    Spacer()
-                                }
-
-                                HStack(alignment: .top) {
-                                    Image(systemName: "checkmark.shield.fill")
-                                        .foregroundColor(.purple)
-                                        .frame(width: 20)
-                                    VStack(alignment: .leading, spacing: 2) {
-                                        Text("Regular Inspection")
-                                            .fontWeight(.medium)
-                                        Text("Check plants weekly for early disease signs")
-                                            .font(.footnote)
-                                            .foregroundColor(.secondary)
-                                    }
-                                    Spacer()
-                                }
-                            }
-                        }
-                            }
-                        }
-                        .buttonStyle(PlainButtonStyle())
-                    }
-                    .padding(20)
-                    .frame(maxWidth: .infinity)
-                    .background(Color(.systemBackground))
-                    .clipShape(RoundedRectangle(cornerRadius: 22))
-                    .padding(.horizontal, 20)
-
-
-                    // Need More Help List
-                    VStack(alignment: .leading, spacing: 16) {
-                        Text("Need More Help?")
-                            .font(.subheadline)
-                            .fontWeight(.semibold)
-                            .foregroundColor(.secondary)
-                            .textCase(.uppercase)
-                            .frame(maxWidth: .infinity, alignment: .leading)
-
-                        VStack(spacing: 0) {
-                            Button(action: {}) {
-                                HStack {
-                                    Label {
-                                        Text("Ask Plant Expert")
-                                    } icon: {
-                                        Image(systemName: "message.fill")
-                                            .foregroundColor(.blue)
-                                    }
-
-                                    Spacer()
-
-                                    Image(systemName: "chevron.forward")
-                                        .foregroundColor(Color(uiColor: UIColor.tertiaryLabel))
-                                        .font(.system(size: 14, weight: .semibold))
-                                }
-                                .padding(.vertical, 12)
-                            }
-                            .buttonStyle(PlainButtonStyle())
-
-                            Divider()
-
-                            Button(action: {}) {
-                                HStack {
-                                    Label {
-                                        Text("Call Agricultural Support")
-                                    } icon: {
-                                        Image(systemName: "phone.fill")
-                                            .foregroundColor(.blue)
-                                    }
-
-                                    Spacer()
-
-                                    Image(systemName: "chevron.forward")
-                                        .foregroundColor(Color(uiColor: UIColor.tertiaryLabel))
-                                        .font(.system(size: 14, weight: .semibold))
-                                }
-                                .padding(.vertical, 12)
-                            }
-                            .buttonStyle(PlainButtonStyle())
-
-                        }
-                    }
-                    .padding(20)
-                    .frame(maxWidth: .infinity)
-                    .background(Color(.systemBackground))
-                    .clipShape(RoundedRectangle(cornerRadius: 22))
-                    .padding(.horizontal, 20)
-                    .padding(.bottom, 30)
                 }
             }
             .background(Color(.systemGroupedBackground))
-            .navigationTitle(classification?.isHealthy == false ? "Disease Analysis" : "Plant Analysis")
+            .navigationTitle(navigationTitle)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    Button {
-                        dismiss()
-                    }
-                    label: {
+                    Button(action: { dismiss() }) {
                         Image(systemName: "checkmark")
                     }
                     .tint(.primary)
                 }
-                .sharedBackgroundVisibility(. visible)
             }
-            .onAppear {
-                classifyImage()
-            }
+            .onAppear(perform: classifyImage)
         }
     }
-    
+
+    private var navigationTitle: String {
+        guard let result = analysisResult else { return "Analysis" }
+        switch result {
+        case .diseaseDetected:
+            return "Disease Analysis"
+        case .healthyPlant:
+            return "Plant Analysis"
+        }
+    }
+
+    private var analysisInProgressView: some View {
+        VStack(alignment: .leading) {
+            Text("Analyzing...")
+                .font(.largeTitle).fontWeight(.bold)
+            Text("Please wait")
+                .font(.title).fontWeight(.bold).foregroundColor(.secondary)
+            ProgressView().padding(.top, 8)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(.horizontal, 20)
+    }
+
+    private func errorView(_ error: String) -> some View {
+        VStack {
+            Text("Analysis Failed")
+                .font(.title).bold()
+            Text(error)
+                .font(.body).foregroundColor(.secondary)
+                .multilineTextAlignment(.center)
+                .padding()
+            Button("Try Again", action: classifyImage)
+                .buttonStyle(.borderedProminent)
+        }
+        .padding()
+    }
+
+    @ViewBuilder
+    private func analysisResultView(for result: AnalysisResult) -> some View {
+        switch result {
+        case .diseaseDetected(let analysis):
+            diseaseContentView(analysis)
+        case .healthyPlant(let advice):
+            healthyContentView(advice)
+        }
+    }
+
     private func classifyImage() {
+        isClassifying = true
+        classificationError = nil
         PlantClassificationService.shared.classifyImage(image) { result in
             DispatchQueue.main.async {
                 isClassifying = false
                 switch result {
-                case .success(let plantClassification):
-                    classification = plantClassification
+                case .success(let analysis):
+                    self.analysisResult = analysis
                 case .failure(let error):
-                    print("Classification failed: \(error.localizedDescription)")
-                    // Fallback to sample data for demo
-                    classification = PlantClassification(
-                        cropName: "Tomato Plant",
-                        diseaseName: "Late Blight", 
-                        confidence: 0.87
-                    )
+                    self.classificationError = error.localizedDescription
+                }
+            }
+        }
+    }
+    
+    // MARK: - Reusable Card Views
+    
+    @ViewBuilder
+    private func infoCard<Content: View>(title: String, content: () -> Content) -> some View {
+        VStack(alignment: .leading, spacing: 16) {
+            Text(title)
+                .font(.subheadline).fontWeight(.semibold).foregroundColor(.secondary)
+                .textCase(.uppercase)
+                .frame(maxWidth: .infinity, alignment: .leading)
+            content()
+        }
+        .padding(20)
+        .frame(maxWidth: .infinity)
+        .background(Color(.systemBackground))
+        .clipShape(RoundedRectangle(cornerRadius: 22))
+        .padding(.horizontal, 20)
+    }
+    
+    @ViewBuilder
+    private func expandableCard<Content: View>(title: String, cardId: String, content: () -> Content) -> some View {
+        VStack(alignment: .leading, spacing: 16) {
+            Button(action: {
+                withAnimation(.easeInOut) {
+                    if expandedCards.contains(cardId) {
+                        expandedCards.remove(cardId)
+                    } else {
+                        expandedCards.insert(cardId)
+                    }
+                }
+            }) {
+                HStack {
+                    Text(title)
+                        .font(.subheadline).fontWeight(.semibold).foregroundColor(.secondary)
+                        .textCase(.uppercase)
+                    Spacer()
+                    Image(systemName: expandedCards.contains(cardId) ? "chevron.down" : "chevron.right")
+                        .foregroundColor(.secondary)
+                }
+            }
+            .buttonStyle(.plain)
+            
+            if expandedCards.contains(cardId) {
+                content()
+            }
+        }
+        .padding(20)
+        .frame(maxWidth: .infinity)
+        .background(Color(.systemBackground))
+        .clipShape(RoundedRectangle(cornerRadius: 22))
+        .padding(.horizontal, 20)
+    }
+    
+    // MARK: - Disease and Healthy Content Views
+    
+    private func diseaseContentView(_ analysis: DiseaseAnalysis) -> some View {
+        VStack(spacing: 20) {
+            Text(analysis.summary)
+                .font(.body)
+                .padding(.horizontal, 20)
+                .foregroundColor(.secondary)
+
+            infoCard(title: "Treatment Steps") {
+                VStack(alignment: .leading, spacing: 16) {
+                    ForEach(Array(analysis.treatmentSteps.enumerated()), id: \.offset) { index, step in
+                        HStack(alignment: .top) {
+                            Text("\(index + 1).")
+                                .fontWeight(.bold).foregroundColor(.blue)
+                            Text(step)
+                                .fontWeight(.medium)
+                        }
+                    }
+                }
+            }
+
+            infoCard(title: "Recommended Products") {
+                VStack(spacing: 12) {
+                    ForEach(analysis.recommendedProducts, id: \.name) { product in
+                        HStack {
+                            Text(product.name).fontWeight(.medium)
+                            Spacer()
+                            Text(product.price).fontWeight(.medium)
+                        }
+                    }
+                }
+            }
+
+            expandableCard(title: "About This Disease", cardId: "about") {
+                Text(analysis.aboutDisease)
+                    .font(.body).foregroundColor(.secondary)
+            }
+
+            expandableCard(title: "Prevention Tips", cardId: "prevention") {
+                VStack(alignment: .leading, spacing: 16) {
+                    ForEach(analysis.preventionTips, id: \.self) { tip in
+                        HStack(alignment: .top) {
+                            Image(systemName: "checkmark.shield.fill")
+                                .foregroundColor(.purple)
+                            Text(tip)
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    private func healthyContentView(_ advice: HealthyPlantAdvice) -> some View {
+        VStack(spacing: 20) {
+            Text(advice.summary)
+                .font(.body)
+                .padding(.horizontal, 20)
+                .foregroundColor(.secondary)
+
+            infoCard(title: "Maintenance Tips") {
+                VStack(alignment: .leading, spacing: 16) {
+                    ForEach(Array(advice.maintenanceTips.enumerated()), id: \.offset) { index, tip in
+                        HStack(alignment: .top) {
+                            Text("\(index + 1).")
+                                .fontWeight(.bold).foregroundColor(.green)
+                            Text(tip)
+                                .fontWeight(.medium)
+                        }
+                    }
+                }
+            }
+
+            expandableCard(title: "About This Plant", cardId: "about") {
+                Text(advice.aboutPlant)
+                    .font(.body).foregroundColor(.secondary)
+            }
+
+            expandableCard(title: "Prevention Tips", cardId: "prevention") {
+                VStack(alignment: .leading, spacing: 16) {
+                    ForEach(advice.preventionTips, id: \.self) { tip in
+                        HStack(alignment: .top) {
+                            Image(systemName: "leaf.fill")
+                                .foregroundColor(.green)
+                            Text(tip)
+                        }
+                    }
                 }
             }
         }

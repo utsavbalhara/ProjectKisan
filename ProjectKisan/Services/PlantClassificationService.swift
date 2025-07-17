@@ -2,18 +2,20 @@ import CoreML
 import Vision
 import UIKit
 
+@MainActor
 class PlantClassificationService {
     static let shared = PlantClassificationService()
+    private let plantExpertService = PlantExpertService()
     
     private init() {}
     
-    func classifyImage(_ image: UIImage, completion: @escaping (Result<PlantClassification, Error>) -> Void) {
+    func classifyImage(_ image: UIImage, completion: @escaping (Result<AnalysisResult, Error>) -> Void) {
         guard let model = try? VNCoreMLModel(for: FasalDiseaseClassifier().model) else {
             completion(.failure(ClassificationError.modelLoadFailed))
             return
         }
         
-        let request = VNCoreMLRequest(model: model) { request, error in
+        let request = VNCoreMLRequest(model: model) { [self] request, error in
             if let error = error {
                 completion(.failure(error))
                 return
@@ -25,53 +27,39 @@ class PlantClassificationService {
                 return
             }
             
-            // Parse the classification result
-            // Handle various separators: _, __, space, double space
             let identifier = topResult.identifier
             var cropName = ""
             var diseaseName = ""
             
-            // Handle "Unknown" class specifically
             if identifier.lowercased() == "unknown" {
-                cropName = "No Crop Detected"
-                diseaseName = ""
+                cropName = "Unknown"
+                diseaseName = "Healthy" // Assume healthy if no crop is detected
             } else {
-                // Try different separators in order of preference
                 if identifier.contains("__") {
                     let components = identifier.components(separatedBy: "__")
                     cropName = components[0]
-                    diseaseName = components.count > 1 ? components[1] : ""
+                    diseaseName = components.count > 1 ? components[1] : "Healthy"
                 } else if identifier.contains("_") {
                     let components = identifier.components(separatedBy: "_")
                     cropName = components[0]
-                    diseaseName = components.count > 1 ? components[1] : ""
-                } else if identifier.contains("  ") { // double space
-                    let components = identifier.components(separatedBy: "  ")
-                    cropName = components[0]
-                    diseaseName = components.count > 1 ? components[1] : ""
-                } else if identifier.contains(" ") {
-                    let components = identifier.components(separatedBy: " ")
-                    cropName = components[0]
-                    diseaseName = components.count > 1 ? components[1] : ""
+                    diseaseName = components.count > 1 ? components[1] : "Healthy"
                 } else {
-                    // If no separator found, treat whole string as crop name
                     cropName = identifier
-                    diseaseName = "Unknown"
+                    diseaseName = "Healthy"
                 }
                 
-                // Clean up the names
                 cropName = self.cleanupName(cropName)
                 diseaseName = self.cleanupDiseaseName(diseaseName)
             }
-            let confidence = Double(topResult.confidence)
             
-            let classification = PlantClassification(
-                cropName: cropName,
-                diseaseName: diseaseName,
-                confidence: confidence
-            )
-            
-            completion(.success(classification))
+            Task {
+                do {
+                    let analysisResult = try await self.plantExpertService.analyze(cropName: cropName, diseaseName: diseaseName)
+                    completion(.success(analysisResult))
+                } catch {
+                    completion(.failure(error))
+                }
+            }
         }
         
         guard let cgImage = image.cgImage else {
@@ -99,16 +87,10 @@ class PlantClassificationService {
     }
     
     private func cleanupDiseaseName(_ name: String) -> String {
-        // Replace anything except letters with space
         var cleaned = name.replacingOccurrences(of: "[^a-zA-Z]", with: " ", options: .regularExpression)
-        
-        // Reduce multiple spaces to single space
         cleaned = cleaned.replacingOccurrences(of: " +", with: " ", options: .regularExpression)
-        
-        // Remove leading and trailing spaces
         cleaned = cleaned.trimmingCharacters(in: .whitespacesAndNewlines)
-        
-        return cleaned
+        return cleaned.isEmpty ? "Healthy" : cleaned
     }
 }
 
