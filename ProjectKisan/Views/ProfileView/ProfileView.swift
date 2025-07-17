@@ -2,6 +2,9 @@ import SwiftUI
 
 struct ProfileView: View {
     @State private var viewModel = ProfileViewModel()
+    @StateObject private var productManager = ProductManager.shared
+    @State private var showingOrderHistory = false
+    
     var body: some View {
         NavigationStack {
             ScrollView {
@@ -30,9 +33,12 @@ struct ProfileView: View {
                     }
                     .padding(.horizontal, 20)
                     
-                    OrderHistoryCard(
-                        orders: viewModel.profileData.orderHistory
-                    )
+                    Button(action: {
+                        showingOrderHistory = true
+                    }) {
+                        IntegratedOrderHistoryCard()
+                    }
+                    .buttonStyle(GlassButtonStyle())
                     .padding(.horizontal, 20)
                     
                     Spacer(minLength: 100)
@@ -55,6 +61,12 @@ struct ProfileView: View {
             .navigationBarTitleDisplayMode(.large)
             .sheet(isPresented: $viewModel.isShowingAccountDetails) {
                 AccountDetailsSheet(profileData: viewModel.profileData)
+            }
+            .sheet(isPresented: $showingOrderHistory) {
+                OrderHistoryView()
+            }
+            .onAppear {
+                productManager.loadOrderHistory()
             }
         }
     }
@@ -165,6 +177,107 @@ struct OrderHistoryCard: View {
                 }
                 .frame(maxWidth: .infinity)
                 .padding(.vertical, 20)
+            }
+        }
+        .padding(24)
+        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 20))
+        .overlay(
+            RoundedRectangle(cornerRadius: 20)
+                .stroke(Color.farmColors.primary.opacity(0.2), lineWidth: 1)
+        )
+        .shadow(color: Color.farmColors.shadow.opacity(0.1), radius: 15, x: 0, y: 8)
+    }
+}
+
+// MARK: - Integrated Order History Card
+struct IntegratedOrderHistoryCard: View {
+    @StateObject private var productManager = ProductManager.shared
+    
+    var body: some View {
+        VStack(alignment: .leading, spacing: 16) {
+            HStack {
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("Order History")
+                        .font(.headline)
+                        .foregroundColor(Color.farmColors.textPrimary)
+                    
+                    Text("Track your purchases")
+                        .font(.subheadline)
+                        .foregroundColor(Color.farmColors.textSecondary)
+                }
+                
+                Spacer()
+                
+                HStack(spacing: 8) {
+                    if productManager.orderHistory.count > 0 {
+                        Text("\(productManager.orderHistory.count)")
+                            .font(.caption)
+                            .fontWeight(.bold)
+                            .foregroundColor(.white)
+                            .frame(width: 20, height: 20)
+                            .background(Color.farmColors.primary)
+                            .clipShape(Circle())
+                    }
+                    
+                    Image(systemName: "chevron.right")
+                        .font(.subheadline)
+                        .foregroundColor(Color.farmColors.primary)
+                }
+            }
+            
+            if productManager.orderHistory.isEmpty {
+                VStack(spacing: 12) {
+                    Image(systemName: "cart.badge.plus")
+                        .font(.system(size: 40))
+                        .foregroundColor(Color.farmColors.textSecondary.opacity(0.5))
+                    
+                    Text("No orders yet")
+                        .font(.body)
+                        .foregroundColor(Color.farmColors.textSecondary)
+                    
+                    Text("Your product orders will appear here after checkout")
+                        .font(.caption)
+                        .foregroundColor(Color.farmColors.textSecondary.opacity(0.7))
+                        .multilineTextAlignment(.center)
+                }
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 20)
+            } else {
+                VStack(spacing: 12) {
+                    HStack {
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text("\(productManager.totalOrdersCount) Orders")
+                                .font(.title3)
+                                .fontWeight(.semibold)
+                                .foregroundColor(Color.farmColors.textPrimary)
+                            
+                            Text("Total spent: $\(productManager.totalOrderValue)")
+                                .font(.caption)
+                                .foregroundColor(Color.farmColors.textSecondary)
+                        }
+                        
+                        Spacer()
+                        
+                        VStack(alignment: .trailing, spacing: 4) {
+                            Text("Recent Order")
+                                .font(.caption)
+                                .foregroundColor(Color.farmColors.textSecondary)
+                            
+                            if let latestOrder = productManager.orderHistory.sorted(by: { $0.orderDate > $1.orderDate }).first {
+                                Text(latestOrder.orderDate, style: .date)
+                                    .font(.caption)
+                                    .fontWeight(.medium)
+                                    .foregroundColor(Color.farmColors.primary)
+                            }
+                        }
+                    }
+                    
+                    Text("Tap to view full order history")
+                        .font(.caption)
+                        .foregroundColor(Color.farmColors.primary)
+                        .frame(maxWidth: .infinity, alignment: .center)
+                }
+                .padding(.vertical, 12)
             }
         }
         .padding(24)

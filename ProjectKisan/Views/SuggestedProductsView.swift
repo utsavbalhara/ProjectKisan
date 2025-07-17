@@ -3,6 +3,8 @@ import SwiftUI
 struct SuggestedProductsView: View {
     let products: [ProductRecommendation]
     @Environment(\.dismiss) private var dismiss
+    @StateObject private var productManager = ProductManager.shared
+    @State private var showingCart = false
     
     var body: some View {
         NavigationStack {
@@ -67,21 +69,58 @@ struct SuggestedProductsView: View {
             .navigationTitle("Suggested Products")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
+                ToolbarItem(placement: .navigationBarLeading) {
                     Button("Done") {
                         dismiss()
                     }
                     .foregroundColor(Color.farmColors.primary)
                 }
+                
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button(action: {
+                        showingCart = true
+                    }) {
+                        HStack {
+                            ZStack {
+                                Image(systemName: "cart.fill")
+                                    .font(.subheadline)
+                                
+                                if productManager.cartItemsCount > 0 {
+                                    Text("\(productManager.cartItemsCount)")
+                                        .font(.caption2)
+                                        .fontWeight(.bold)
+                                        .foregroundColor(.white)
+                                        .frame(width: 16, height: 16)
+                                        .background(Color.red)
+                                        .clipShape(Circle())
+                                        .offset(x: 8, y: -8)
+                                }
+                            }
+                            Text("Cart")
+                                .font(.subheadline)
+                                .fontWeight(.medium)
+                        }
+                        .foregroundColor(Color.farmColors.primary)
+                    }
+                }
             }
         }
         .presentationDetents([.large])
         .presentationDragIndicator(.visible)
+        .onAppear {
+            // Update ProductManager with current recommendations when view appears
+            productManager.updateProducts(from: products)
+        }
+        .sheet(isPresented: $showingCart) {
+            CartView()
+        }
     }
 }
 
 struct ProductCard: View {
     let product: ProductRecommendation
+    @StateObject private var productManager = ProductManager.shared
+    @State private var isAdded = false
     
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
@@ -156,51 +195,45 @@ struct ProductCard: View {
             }
             .padding(.vertical, 8)
             
-            // Action Buttons
-            HStack(spacing: 12) {
-                Button(action: {
-                    // TODO: Add to cart functionality
-                }) {
-                    HStack {
-                        Image(systemName: "cart.fill")
-                            .font(.caption)
-                        
-                        Text("Add to Cart")
-                            .font(.caption)
-                            .fontWeight(.medium)
-                    }
-                    .foregroundColor(.white)
-                    .padding(.vertical, 10)
-                    .padding(.horizontal, 16)
-                    .background(
-                        LinearGradient(
-                            colors: [Color.farmColors.primary, Color.farmColors.primaryLight],
-                            startPoint: .leading,
-                            endPoint: .trailing
-                        )
-                    )
-                    .cornerRadius(8)
-                }
-                
-                Button(action: {
-                    // TODO: View details functionality
-                }) {
-                    HStack {
-                        Image(systemName: "info.circle.fill")
-                            .font(.caption)
-                        
-                        Text("View Details")
-                            .font(.caption)
-                            .fontWeight(.medium)
-                    }
-                    .foregroundColor(Color.farmColors.primary)
-                    .padding(.vertical, 10)
-                    .padding(.horizontal, 16)
-                    .background(Color.farmColors.primary.opacity(0.1))
-                    .cornerRadius(8)
-                }
-                
+            // Add to Cart Button
+            HStack {
                 Spacer()
+                
+                Button(action: {
+                    let productToAdd = Product.from(product)
+                    productManager.addToCart(productToAdd)
+                    
+                    // Visual feedback
+                    withAnimation(.easeInOut(duration: 0.2)) {
+                        isAdded = true
+                    }
+                    
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                        withAnimation(.easeInOut(duration: 0.2)) {
+                            isAdded = false
+                        }
+                    }
+                }) {
+                    Image(systemName: "plus")
+                        .font(.system(size: 16, weight: .bold))
+                        .foregroundColor(.white)
+                        .frame(width: 40, height: 40)
+                        .background(
+                            LinearGradient(
+                                colors: [Color.farmColors.primary, Color.farmColors.successGreen],
+                                startPoint: .topLeading,
+                                endPoint: .bottomTrailing
+                            )
+                        )
+                        .clipShape(Circle())
+                        .background(
+                            Circle()
+                                .fill(.ultraThinMaterial)
+                                .shadow(color: Color.farmColors.primary.opacity(0.3), radius: 8, x: 0, y: 4)
+                        )
+                }
+                .scaleEffect(1.0)
+                .animation(.easeInOut(duration: 0.1), value: false)
             }
         }
         .padding(20)
