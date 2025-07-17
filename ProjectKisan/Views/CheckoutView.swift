@@ -364,51 +364,69 @@ struct OrderSuccessView: View {
     let order: Order
     
     var body: some View {
-        VStack(spacing: 24) {
+        VStack(spacing: 30) {
             Spacer()
             
-            // Success Animation
+            // Large green checkmark with liquid glass effect - Exact copy from original
             ZStack {
                 Circle()
-                    .fill(Color.farmColors.successGreen.opacity(0.2))
+                    .fill(Color(UIColor.systemBackground).opacity(0.8))
+                    .overlay(
+                        Circle()
+                            .stroke(Color.white.opacity(0.3), lineWidth: 2)
+                    )
                     .frame(width: 120, height: 120)
+                    .shadow(color: .black.opacity(0.1), radius: 20, x: 0, y: 10)
                 
-                Image(systemName: "checkmark.circle.fill")
-                    .font(.system(size: 60))
-                    .foregroundColor(Color.farmColors.successGreen)
+                Image(systemName: "checkmark")
+                    .font(.system(size: 50, weight: .bold))
+                    .foregroundColor(.green)
             }
             
-            VStack(spacing: 12) {
-                Text("Order Placed Successfully!")
-                    .font(.title2)
+            VStack(spacing: 16) {
+                Text("Order Confirmed!")
+                    .font(.largeTitle)
                     .fontWeight(.bold)
-                    .foregroundColor(Color.farmColors.textPrimary)
+                    .foregroundColor(.primary)
                 
                 Text("Order #\(order.orderNumber)")
-                    .font(.headline)
-                    .foregroundColor(Color.farmColors.primary)
-                
-                Text("Your order has been confirmed and will be delivered in 3-5 business days.")
-                    .font(.body)
-                    .foregroundColor(Color.farmColors.textSecondary)
-                    .multilineTextAlignment(.center)
-                    .padding(.horizontal)
-            }
-            
-            VStack(spacing: 8) {
-                Text("Order Total: $\(order.totalAmount)")
-                    .font(.headline)
+                    .font(.title2)
                     .fontWeight(.semibold)
                     .foregroundColor(Color.farmColors.primary)
                 
-                Text("Items: \(order.products.count)")
-                    .font(.subheadline)
-                    .foregroundColor(Color.farmColors.textSecondary)
+                Text("Your order has been placed successfully.\nYou will receive a confirmation email shortly.")
+                    .font(.body)
+                    .foregroundColor(.secondary)
+                    .multilineTextAlignment(.center)
+                    .lineSpacing(4)
             }
+            
+            VStack(spacing: 12) {
+                HStack {
+                    Image(systemName: "truck.box.fill")
+                        .foregroundColor(.green)
+                    Text("Estimated delivery: 3-5 business days")
+                        .font(.subheadline)
+                        .foregroundColor(.secondary)
+                }
+                
+                HStack {
+                    Image(systemName: "envelope.fill")
+                        .foregroundColor(.green)
+                    Text("Tracking details will be sent via email")
+                        .font(.subheadline)
+                        .foregroundColor(.secondary)
+                }
+            }
+            .padding()
+            .background(
+                RoundedRectangle(cornerRadius: 12)
+                    .fill(Color(UIColor.secondarySystemGroupedBackground))
+            )
+            .padding(.horizontal, 20)
             
             Spacer()
         }
-        .padding()
     }
 }
 
