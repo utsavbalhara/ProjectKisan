@@ -6,14 +6,14 @@ struct ProfileView: View {
         NavigationStack {
             ScrollView {
                 LazyVStack(spacing: 20) {
-                    ProfileHeaderCard(
+                    ProfileHeaderSection(
                         profileData: viewModel.profileData,
                         onProfileTap: {
                             viewModel.showAccountDetails()
                         }
                     )
                     
-                    HStack(spacing: 16) {
+                    VStack(spacing: 16) {
                         NavigationLink(destination: EarningsDetailView()) {
                             EarningsCard(
                                 earnings: viewModel.formattedTotalEarnings,
@@ -33,6 +33,7 @@ struct ProfileView: View {
                     OrderHistoryCard(
                         orders: viewModel.profileData.orderHistory
                     )
+                    .padding(.horizontal, 20)
                     
                     Spacer(minLength: 100)
                 }
@@ -51,7 +52,7 @@ struct ProfileView: View {
                 .ignoresSafeArea()
             )
             .navigationTitle("Profile")
-            .toolbarBackground(.ultraThinMaterial, for: .navigationBar)
+            .navigationBarTitleDisplayMode(.large)
             .sheet(isPresented: $viewModel.isShowingAccountDetails) {
                 AccountDetailsSheet(profileData: viewModel.profileData)
             }
@@ -59,13 +60,13 @@ struct ProfileView: View {
     }
 }
 
-// MARK: - Profile Header Card
-struct ProfileHeaderCard: View {
+// MARK: - Profile Header Section
+struct ProfileHeaderSection: View {
     let profileData: ProfileData
     let onProfileTap: () -> Void
     
     var body: some View {
-        VStack(spacing: 16) {
+        VStack(spacing: 24) {
             // Profile Picture - Tappable
             Button(action: onProfileTap) {
                 AsyncImage(url: URL(string: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face")) { image in
@@ -84,7 +85,7 @@ struct ProfileHeaderCard: View {
                         )
                 }
             }
-            .frame(width: 100, height: 100)
+            .frame(width: 120, height: 120)
             .clipShape(Circle())
             .overlay(
                 Circle()
@@ -99,39 +100,26 @@ struct ProfileHeaderCard: View {
             )
             .shadow(color: Color.farmColors.primary.opacity(0.3), radius: 10, x: 0, y: 5)
             
-            // Farmer Info
-            VStack(spacing: 8) {
+            // Farmer Info - Plain Text (No Card)
+            VStack(spacing: 12) {
                 Text(profileData.farmerName)
-                    .font(.title2)
+                    .font(.largeTitle)
                     .fontWeight(.bold)
                     .foregroundColor(Color.farmColors.textPrimary)
                 
-                HStack(spacing: 4) {
+                HStack(spacing: 6) {
                     Image(systemName: "location.fill")
-                        .font(.caption)
+                        .font(.subheadline)
                         .foregroundColor(Color.farmColors.secondary)
                     
                     Text(profileData.location)
-                        .font(.subheadline)
+                        .font(.title3)
                         .foregroundColor(Color.farmColors.textSecondary)
                 }
             }
         }
-        .padding(24)
-        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 24))
-        .overlay(
-            RoundedRectangle(cornerRadius: 24)
-                .stroke(
-                    LinearGradient(
-                        colors: [Color.farmColors.primary.opacity(0.3), Color.farmColors.primaryLight.opacity(0.1)],
-                        startPoint: .topLeading,
-                        endPoint: .bottomTrailing
-                    ),
-                    lineWidth: 1
-                )
-        )
-        .shadow(color: .black.opacity(0.1), radius: 20, x: 0, y: 10)
         .padding(.horizontal, 20)
+        .padding(.vertical, 10)
     }
 }
 
