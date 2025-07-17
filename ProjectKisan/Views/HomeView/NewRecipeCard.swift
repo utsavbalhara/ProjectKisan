@@ -31,11 +31,11 @@ struct NewRecipeCard: View {
                     }) {
                         HStack(alignment: .center, spacing: 6) {
                             Image(systemName: "camera.fill")
-                                .foregroundColor(.white)
+                                .foregroundColor(Color.farmColors.surface)
                                 .frame(width: 28, height: 26, alignment: .center)
 
                             Text("Take Photo")
-                                .foregroundColor(.white)
+                                .foregroundColor(Color.farmColors.surface)
                                 .font(.subheadline)
                                 .fontWeight(.semibold)
 
@@ -54,7 +54,7 @@ struct NewRecipeCard: View {
                             )
                         )
                         .clipShape(RoundedRectangle(cornerRadius: 999))
-                        .glassEffect(.regular.tint(.accentColor).interactive())
+                        .glassEffect(.regular.tint(Color.farmColors.primary).interactive())
                     }
                     .buttonStyle(.plain)
                     

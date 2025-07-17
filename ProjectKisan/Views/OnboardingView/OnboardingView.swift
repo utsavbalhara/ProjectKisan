@@ -19,10 +19,10 @@ struct OnboardingView: View {
                 colors: [
                     Color.farmColors.backgroundLight,
                     Color.farmColors.backgroundMedium,
-                    Color.farmColors.backgroundLight
+                    Color.clear
                 ],
-                startPoint: .topLeading,
-                endPoint: .bottomTrailing
+                startPoint: .top,
+                endPoint: .bottom
             )
             .ignoresSafeArea()
             
@@ -113,6 +113,7 @@ struct OnboardingControl: View {
                     ),
                     in: RoundedRectangle(cornerRadius: 25, style: .continuous)
                 )
+                .glassEffect(.regular.tint(Color.farmColors.primary).interactive())
                 .shadow(color: Color.farmColors.primary.opacity(0.3), radius: 8, x: 0, y: 4)
             }
             .scaleEffect(currentPage == pageCount - 1 ? 1.05 : 1.0)
@@ -141,7 +142,7 @@ struct PageIndicator: View {
         HStack(spacing: 8) {
             ForEach(0..<pageCount, id: \.self) { index in
                 RoundedRectangle(cornerRadius: 4)
-                    .fill(index == currentPage ? Color.farmColors.primary : Color.farmColors.backgroundDark.opacity(0.5))
+                    .fill(index == currentPage ? Color.farmColors.primary : Color.farmColors.textSecondary.opacity(0.5))
                     .frame(
                         width: index == currentPage ? 24 : 8,
                         height: 8

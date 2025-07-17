@@ -60,7 +60,7 @@ struct LanguageButton: View {
             Text(language)
                 .font(.title2)
                 .fontWeight(.semibold)
-                .foregroundColor(isSelected ? Color.farmColors.surface : Color.farmColors.textPrimary)
+                .foregroundColor(isSelected ? .white : .primary)
                 .padding()
                 .frame(maxWidth: .infinity)
                 .background(
@@ -72,10 +72,15 @@ struct LanguageButton: View {
                         } else {
                             RoundedRectangle(cornerRadius: 16, style: .continuous)
                                 .fill(.ultraThinMaterial)
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 16, style: .continuous)
+                                        .stroke(Color.farmColors.primary.opacity(0.5), lineWidth: 1)
+                                )
                         }
                     }
                 )
         }
+        .accentColor(Color.farmColors.textPrimary)
     }
 }
 
