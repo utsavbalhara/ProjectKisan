@@ -45,7 +45,7 @@ class PlantExpertService: ObservableObject {
         }
     }
     
-    func analyze(cropName: String, diseaseName: String) async throws -> AnalysisResult {
+    func analyze(cropName: String, diseaseName: String, confidence: Double = 0.85) async throws -> AnalysisResult {
         guard isAvailable else {
             throw PlantExpertError.modelUnavailable(unavailabilityReason)
         }
@@ -55,46 +55,83 @@ class PlantExpertService: ObservableObject {
         
         do {
             if diseaseName.lowercased() == "healthy" {
-                return try await analyzeHealthyPlant(cropName: cropName)
+                return try await analyzeHealthyPlant(cropName: cropName, confidence: confidence)
             } else {
-                return try await analyzeDiseaseCondition(cropName: cropName, diseaseName: diseaseName)
+                return try await analyzeDiseaseCondition(cropName: cropName, diseaseName: diseaseName, confidence: confidence)
             }
         } catch {
             throw PlantExpertError.analysisError(error.localizedDescription)
         }
     }
     
-    private func analyzeHealthyPlant(cropName: String) async throws -> AnalysisResult {
+    private func analyzeHealthyPlant(cropName: String, confidence: Double) async throws -> AnalysisResult {
         let session = LanguageModelSession(instructions: ExpertInstructions.healthyPlantExpert)
         
         let prompt = Prompt("""
-        A farmer has a healthy \(cropName.lowercased()) plant. Provide comprehensive advice on maintaining this plant's health, including:
-        - A brief, positive acknowledgment of the plant's current health.
-        - 4 to 6 specific, actionable maintenance tips for a \(cropName.lowercased()) plant.
-        - A detailed "About this Plant" section.
-        - A list of prevention tips to avoid common diseases for \(cropName.lowercased()).
+        A farmer has a healthy \(cropName.lowercased()) plant with \(Int(confidence * 100))% classification confidence.
         
-        Be encouraging and focus on preventive care.
+        Provide CONCISE, structured advice:
+        
+        PLANT INFORMATION:
+        - cropName: \(cropName)
+        - scientificName: Provide accurate scientific name
+        - confidence: \(confidence)
+        
+        MAINTENANCE TIPS (exactly 4 tips):
+        - title: 2-5 words max
+        - description: 1-2 lines max, actionable
+        
+        ABOUT PLANT:
+        - summary: 1-2 lines max, positive acknowledgment
+        - aboutPlant: 2-3 lines max, detailed plant information
+        - plantDetails: Type, Growth Pattern, Optimal Conditions (each 3-8 words)
+        
+        PREVENTION TIPS (exactly 4 tips):
+        - title: 2-5 words max
+        - description: 1-2 lines max
+        - icon: SF Symbol name (e.g., drop.fill, wind, leaf.fill, checkmark.shield.fill)
+        
+        Be encouraging and focus on preventive care. Keep all text concise and farmer-friendly.
         """)
         
         let response = try await session.respond(to: prompt, generating: HealthyPlantAdvice.self)
         return .healthyPlant(response.content)
     }
     
-    private func analyzeDiseaseCondition(cropName: String, diseaseName: String) async throws -> AnalysisResult {
+    private func analyzeDiseaseCondition(cropName: String, diseaseName: String, confidence: Double) async throws -> AnalysisResult {
         let session = LanguageModelSession(instructions: ExpertInstructions.diseaseExpert)
         
         let prompt = Prompt("""
-        A farmer has detected \(diseaseName) in their \(cropName.lowercased()) crop. 
+        A farmer has detected \(diseaseName) in their \(cropName.lowercased()) crop with \(Int(confidence * 100))% classification confidence.
         
-        Provide a comprehensive, real-world analysis including:
-        - A brief, informative summary of the disease.
-        - 4 to 6 specific, actionable treatment steps.
-        - A list of 3 to 4 real, recommended products with their approximate prices in INR (e.g., "Product Name - ₹XXX").
-        - A detailed "About this Disease" section.
-        - A list of prevention tips for the future.
+        Provide CONCISE, structured analysis:
         
-        Be specific, practical, and actionable in your advice. Ensure the product prices are realistic for the Indian market.
+        DISEASE INFORMATION:
+        - cropName: \(cropName)
+        - diseaseName: \(diseaseName)
+        - scientificName: Provide accurate scientific name of the disease
+        - confidence: \(confidence)
+        
+        TREATMENT STEPS (exactly 4 steps):
+        - title: 2-5 words max
+        - description: 1-2 lines max, actionable and specific
+        
+        RECOMMENDED PRODUCTS (exactly 3 products):
+        - name: 2-5 words max
+        - usage: 1-2 lines max, specific instructions
+        - price: INR range (e.g., ₹100-150)
+        
+        ABOUT DISEASE:
+        - summary: 1-2 lines max, informative summary
+        - aboutDisease: 2-3 lines max, detailed disease information
+        - diseaseDetails: Type, Spreads By, Favorable Conditions (each 3-8 words)
+        
+        PREVENTION TIPS (exactly 4 tips):
+        - title: 2-5 words max
+        - description: 1-2 lines max
+        - icon: SF Symbol name (e.g., drop.fill, wind, leaf.fill, checkmark.shield.fill)
+        
+        Be specific, practical, and actionable. Ensure INR prices are realistic for Indian market.
         """)
         
         let response = try await session.respond(to: prompt, generating: DiseaseAnalysis.self)

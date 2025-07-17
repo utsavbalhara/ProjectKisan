@@ -28,6 +28,7 @@ class PlantClassificationService {
             }
             
             let identifier = topResult.identifier
+            let confidence = Double(topResult.confidence)
             var cropName = ""
             var diseaseName = ""
             
@@ -54,7 +55,7 @@ class PlantClassificationService {
             
             Task {
                 do {
-                    let analysisResult = try await self.plantExpertService.analyze(cropName: cropName, diseaseName: diseaseName)
+                    let analysisResult = try await self.plantExpertService.analyze(cropName: cropName, diseaseName: diseaseName, confidence: confidence)
                     completion(.success(analysisResult))
                 } catch {
                     completion(.failure(error))
