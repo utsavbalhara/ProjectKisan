@@ -147,8 +147,6 @@ struct OrderItem: Identifiable {
 class ProfileViewModel {
     var profileData: ProfileData
     var isShowingAccountDetails = false
-    var isShowingEarningsDetail = false
-    var isShowingRevenueDetail = false
     var selectedEarningsBreakdown: [EarningsBreakdown] = []
     
     init() {
@@ -185,29 +183,6 @@ class ProfileViewModel {
         }
     }
     
-    func showEarningsDetail() {
-        withAnimation(.spring(response: 0.5, dampingFraction: 0.75)) {
-            isShowingEarningsDetail = true
-        }
-    }
-    
-    func showRevenueDetail() {
-        withAnimation(.spring(response: 0.5, dampingFraction: 0.75)) {
-            isShowingRevenueDetail = true
-        }
-    }
-    
-    func hideEarningsDetail() {
-        withAnimation(.spring(response: 0.5, dampingFraction: 0.75)) {
-            isShowingEarningsDetail = false
-        }
-    }
-    
-    func hideRevenueDetail() {
-        withAnimation(.spring(response: 0.5, dampingFraction: 0.75)) {
-            isShowingRevenueDetail = false
-        }
-    }
     
     // MARK: - Formatted Data
     var formattedTotalEarnings: String {
