@@ -47,6 +47,7 @@ struct MainTabView: View {
         }
         .tint(Color.farmColors.primary)
         .background(Color.farmColors.backgroundLight)
+        .tabBarMinimizeBehavior(.onScrollDown)
     }
 }
 
