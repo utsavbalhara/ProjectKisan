@@ -22,15 +22,37 @@ enum CropStage: String, CaseIterable {
     }
 }
 
+struct WeatherData {
+    let temperature: Double // °C
+    let precipitation: Double // mm
+    let windSpeed: Double // km/h
+    let windDirection: String
+    let humidity: Double // %
+    let hoursOfSunshine: Double // hours
+}
+
+struct IoTSensorData {
+    let soilMoisture: Double // %
+    let soilTemperature: Double // °C
+    let soilPH: Double
+    let airTemperature: Double // °C
+    let humidity: Double // %
+    let nutrientLevels: String // Description
+}
+
 class Farm: Identifiable {
     let id = UUID()
     let typeOfCrop: String
     let areaInAcres: Double
     let currentStage: CropStage
+    let weatherData: WeatherData
+    let iotSensorData: IoTSensorData
     
-    init(typeOfCrop: String, areaInAcres: Double, currentStage: CropStage) {
+    init(typeOfCrop: String, areaInAcres: Double, currentStage: CropStage, weatherData: WeatherData, iotSensorData: IoTSensorData) {
         self.typeOfCrop = typeOfCrop
         self.areaInAcres = areaInAcres
         self.currentStage = currentStage
+        self.weatherData = weatherData
+        self.iotSensorData = iotSensorData
     }
 }
