@@ -37,7 +37,7 @@ struct PreventionTip {
     @Guide(description: "A brief description of the prevention tip (1-2 lines max).")
     let description: String
     
-    @Guide(description: "An SF Symbol icon name for the tip, from these only (“leaf”, “scissors”, “trash.circle”, “sparkles”, “multiply.circle”, “eye”, “binoculars”, “ladybug”, “exclamationmark.triangle”, “magnifyingglass.circle”, “cube.box.fill”, “waveform.path.ecg”, “leaf.arrow.triangle.circlepath”, “gauge”, “checkmark.seal”, “drop”, “drop.triangle”, “humidity”, “thermometer.sun”, “cloud.drizzle”, “leaf.fill”, “scissors.circle”, “flame”, “shield.leaf”, “xmark.shield”, “eyes”, “scope”, “antenna.radiowaves.left.and.right”, “bolt.trianglebadge.exclamationmark”, “bug”, “chart.bar.xaxis”, “ruler”, “shovel”, “fork.knife”, “testtube.2”, “leaf.circle”, “square.3.layers.3d.down.right”, “arrow.triangle.branch”, “wind”, “thermometer.variable.and.figure”, “drop.circle”, “cloud.sun.rain”, “water.waves”, “sensor.tag.radiowaves.forward”, “lightbulb”, “sun.min”, “cloud.bolt.rain”, “target”, “globe.americas”, “checkmark.shield”)")
+    @Guide(description: "An SF Symbol icon name for the tip, (e.g., drop.fill, wind, leaf.fill, checkmark.shield.fill)")
     let icon: String
 }
 

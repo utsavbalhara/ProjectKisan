@@ -89,8 +89,7 @@ class PlantExpertService: ObservableObject {
         PREVENTION TIPS (exactly 4 tips):
         - title: 2-5 words max
         - description: 1-2 lines max
-        - icon: SF Symbol name (e.g., drop.fill, wind, leaf.fill, checkmark.shield.fill)
-        
+        - icon: SF Symbol name from these only (“leaf”, “scissors”, “trash.circle”, “sparkles”, “multiply.circle”, “eye”, “binoculars”, “ladybug”, “exclamationmark.triangle”, “magnifyingglass.circle”, “cube.box.fill”, “waveform.path.ecg”, “leaf.arrow.triangle.circlepath”, “gauge”, “checkmark.seal”, “drop”, “drop.triangle”, “humidity”, “thermometer.sun”, “cloud.drizzle”, “leaf.fill”, “scissors.circle”, “flame”, “shield.leaf”, “xmark.shield”, “eyes”, “scope”, “antenna.radiowaves.left.and.right”, “bolt.trianglebadge.exclamationmark”, “bug”, “chart.bar.xaxis”, “ruler”, “shovel”, “fork.knife”, “testtube.2”, “leaf.circle”, “square.3.layers.3d.down.right”, “arrow.triangle.branch”, “wind”, “thermometer.variable.and.figure”, “drop.circle”, “cloud.sun.rain”, “water.waves”, “sensor.tag.radiowaves.forward”, “lightbulb”, “sun.min”, “cloud.bolt.rain”, “target”, “globe.americas”, “checkmark.shield”)
         Be encouraging and focus on preventive care. Keep all text concise and farmer-friendly.
         """)
         

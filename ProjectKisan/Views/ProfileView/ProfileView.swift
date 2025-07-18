@@ -4,6 +4,7 @@ struct ProfileView: View {
     @State private var viewModel = ProfileViewModel()
     @StateObject private var productManager = ProductManager.shared
     @State private var showingOrderHistory = false
+    @State private var showingDebugSheet = false
     
     var body: some View {
         NavigationStack {
@@ -41,6 +42,24 @@ struct ProfileView: View {
                     .buttonStyle(GlassButtonStyle())
                     .padding(.horizontal, 20)
                     
+                    // Debug Option
+                    Button(action: {
+                        showingDebugSheet = true
+                    }) {
+                        HStack {
+                            Text("Debug")
+                                .font(.subheadline)
+                                .foregroundColor(Color.farmColors.textSecondary)
+                            Spacer()
+                            Image(systemName: "chevron.right")
+                                .font(.caption)
+                                .foregroundColor(Color.farmColors.textSecondary)
+                        }
+                        .padding(.horizontal, 20)
+                        .padding(.vertical, 16)
+                    }
+                    .buttonStyle(PlainButtonStyle())
+                    
                     Spacer(minLength: 100)
                 }
                 .padding(.top, 20)
@@ -64,6 +83,9 @@ struct ProfileView: View {
             }
             .sheet(isPresented: $showingOrderHistory) {
                 OrderHistoryView()
+            }
+            .sheet(isPresented: $showingDebugSheet) {
+                DebugOptionsSheet()
             }
             .onAppear {
                 productManager.loadOrderHistory()
@@ -287,6 +309,95 @@ struct IntegratedOrderHistoryCard: View {
                 .stroke(Color.farmColors.primary.opacity(0.2), lineWidth: 1)
         )
         .shadow(color: Color.farmColors.shadow.opacity(0.1), radius: 15, x: 0, y: 8)
+    }
+}
+
+// MARK: - Debug Options Sheet
+struct DebugOptionsSheet: View {
+    @Environment(\.dismiss) private var dismiss
+    @State private var onboardingViewModel = OnboardingViewModel()
+    @State private var showingResetConfirmation = false
+    
+    var body: some View {
+        NavigationStack {
+            VStack(spacing: 24) {
+                VStack(alignment: .leading, spacing: 16) {
+                    Text("Debug Options")
+                        .font(.title2)
+                        .fontWeight(.bold)
+                        .foregroundColor(Color.farmColors.textPrimary)
+                    
+                    Text("Developer tools and reset options")
+                        .font(.subheadline)
+                        .foregroundColor(Color.farmColors.textSecondary)
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                
+                VStack(spacing: 16) {
+                    Button(action: {
+                        showingResetConfirmation = true
+                    }) {
+                        HStack {
+                            Image(systemName: "arrow.clockwise.circle.fill")
+                                .font(.title2)
+                                .foregroundColor(.orange)
+                            
+                            VStack(alignment: .leading, spacing: 4) {
+                                Text("Reset Onboarding")
+                                    .font(.headline)
+                                    .fontWeight(.semibold)
+                                    .foregroundColor(Color.farmColors.textPrimary)
+                                
+                                Text("Clear onboarding completion flag")
+                                    .font(.caption)
+                                    .foregroundColor(Color.farmColors.textSecondary)
+                            }
+                            
+                            Spacer()
+                            
+                            Image(systemName: "chevron.right")
+                                .font(.caption)
+                                .foregroundColor(Color.farmColors.textSecondary)
+                        }
+                        .padding(20)
+                        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 16))
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 16)
+                                .stroke(Color.orange.opacity(0.2), lineWidth: 1)
+                        )
+                    }
+                    .buttonStyle(PlainButtonStyle())
+                }
+                
+                Spacer()
+            }
+            .padding(24)
+            .navigationTitle("Debug")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button("Done") {
+                        dismiss()
+                    }
+                    .font(.headline)
+                    .fontWeight(.medium)
+                    .foregroundColor(Color.farmColors.primary)
+                }
+            }
+            .confirmationDialog(
+                "Reset Onboarding",
+                isPresented: $showingResetConfirmation,
+                titleVisibility: .visible
+            ) {
+                Button("Reset", role: .destructive) {
+                    onboardingViewModel.hasCompletedOnboarding = false
+                    dismiss()
+                }
+                Button("Cancel", role: .cancel) { }
+            } message: {
+                Text("This will reset the onboarding flow and show it again on next app launch. Are you sure?")
+            }
+        }
     }
 }
 
