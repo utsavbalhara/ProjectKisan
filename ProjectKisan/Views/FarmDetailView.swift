@@ -20,12 +20,12 @@ struct FarmDetailView: View {
                 VStack(alignment: .leading, spacing: 20) {
                     // Main Farm Info (no card)
                     VStack(alignment: .leading, spacing: 8) {
-                        Text(farm.typeOfCrop)
+                        Text(farm.farmName)
                             .font(.largeTitle)
                             .fontWeight(.bold)
                             .foregroundColor(Color.farmColors.textPrimary)
                         
-                        Text("\(String(format: "%.1f", farm.areaInAcres)) acres")
+                        Text("\(farm.typeOfCrop) • \(String(format: "%.1f", farm.areaInAcres)) acres")
                             .font(.title2)
                             .fontWeight(.semibold)
                             .foregroundColor(Color.farmColors.textSecondary)
@@ -331,9 +331,11 @@ struct SensorDataItem: View {
     
     NavigationStack {
         FarmDetailView(farm: Farm(
+            farmName: "Wheat Farm Alpha",
             typeOfCrop: "Wheat",
             areaInAcres: 25.5,
             currentStage: .cropManagement,
+            iotSensorId: "WF-001",
             weatherData: sampleWeather,
             iotSensorData: sampleIoT
         ))

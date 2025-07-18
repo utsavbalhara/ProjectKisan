@@ -1,4 +1,5 @@
 import Foundation
+import UIKit
 
 enum CropStage: String, CaseIterable {
     case preparation = "Preparation"
@@ -42,17 +43,23 @@ struct IoTSensorData {
 
 class Farm: Identifiable {
     let id = UUID()
+    let farmName: String
     let typeOfCrop: String
     let areaInAcres: Double
     let currentStage: CropStage
+    let iotSensorId: String
     let weatherData: WeatherData
     let iotSensorData: IoTSensorData
+    let farmImage: UIImage?
     
-    init(typeOfCrop: String, areaInAcres: Double, currentStage: CropStage, weatherData: WeatherData, iotSensorData: IoTSensorData) {
+    init(farmName: String = "", typeOfCrop: String, areaInAcres: Double, currentStage: CropStage, iotSensorId: String = "", weatherData: WeatherData, iotSensorData: IoTSensorData, farmImage: UIImage? = nil) {
+        self.farmName = farmName.isEmpty ? "\(typeOfCrop) Farm" : farmName
         self.typeOfCrop = typeOfCrop
         self.areaInAcres = areaInAcres
         self.currentStage = currentStage
+        self.iotSensorId = iotSensorId
         self.weatherData = weatherData
         self.iotSensorData = iotSensorData
+        self.farmImage = farmImage
     }
 }

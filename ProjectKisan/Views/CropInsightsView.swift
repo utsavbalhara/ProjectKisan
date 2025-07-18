@@ -378,9 +378,11 @@ struct FertilizerAdviceCard: View {
     
     NavigationStack {
         CropInsightsView(farm: Farm(
+            farmName: "Wheat Farm Alpha",
             typeOfCrop: "Wheat",
             areaInAcres: 25.5,
             currentStage: .cropManagement,
+            iotSensorId: "WF-001",
             weatherData: sampleWeather,
             iotSensorData: sampleIoT
         ))

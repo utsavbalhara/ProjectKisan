@@ -6,11 +6,19 @@ struct FarmCard: View {
     var body: some View {
         NavigationLink(destination: FarmDetailView(farm: farm)) {
             ZStack {
-                Image(farm.typeOfCrop.lowercased())
-                    .resizable()
-                    .aspectRatio(contentMode: .fill)
-                    .frame(height: 200)
-                    .clipped()
+                Group {
+                    if let farmImage = farm.farmImage {
+                        Image(uiImage: farmImage)
+                            .resizable()
+                            .aspectRatio(contentMode: .fill)
+                    } else {
+                        Image(farm.typeOfCrop.lowercased())
+                            .resizable()
+                            .aspectRatio(contentMode: .fill)
+                    }
+                }
+                .frame(height: 200)
+                .clipped()
                 
                 LinearGradient(
                     gradient: Gradient(colors: [
@@ -105,16 +113,20 @@ struct FarmCard: View {
     NavigationStack {
         VStack(spacing: 16) {
             FarmCard(farm: Farm(
+                farmName: "Wheat Farm Alpha",
                 typeOfCrop: "Wheat",
                 areaInAcres: 25.5,
                 currentStage: .cropManagement,
+                iotSensorId: "WF-001",
                 weatherData: sampleWeatherWheat,
                 iotSensorData: sampleIoTWheat
             ))
             FarmCard(farm: Farm(
+                farmName: "Rice Farm Beta",
                 typeOfCrop: "Rice",
                 areaInAcres: 18.0,
                 currentStage: .irrigation,
+                iotSensorId: "RF-002",
                 weatherData: sampleWeatherRice,
                 iotSensorData: sampleIoTRice
             ))

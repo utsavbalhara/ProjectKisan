@@ -1,8 +1,8 @@
 import SwiftUI
+import Combine
 
-@Observable
-class FeedViewModel {
-    var farms: [Farm] = []
+class FeedViewModel: ObservableObject {
+    @Published var farms: [Farm] = []
     
     init() {
         loadFarms()
@@ -46,8 +46,12 @@ class FeedViewModel {
         )
         
         farms = [
-            Farm(typeOfCrop: "Wheat", areaInAcres: 25.5, currentStage: .cropManagement, weatherData: wheatWeather, iotSensorData: wheatIoT),
-            Farm(typeOfCrop: "Rice", areaInAcres: 18.0, currentStage: .irrigation, weatherData: riceWeather, iotSensorData: riceIoT)
+            Farm(farmName: "Wheat Farm Alpha", typeOfCrop: "Wheat", areaInAcres: 25.5, currentStage: .cropManagement, iotSensorId: "WF-001", weatherData: wheatWeather, iotSensorData: wheatIoT),
+            Farm(farmName: "Rice Farm Beta", typeOfCrop: "Rice", areaInAcres: 18.0, currentStage: .irrigation, iotSensorId: "RF-002", weatherData: riceWeather, iotSensorData: riceIoT)
         ]
+    }
+    
+    func addFarm(_ farm: Farm) {
+        farms.append(farm)
     }
 }
