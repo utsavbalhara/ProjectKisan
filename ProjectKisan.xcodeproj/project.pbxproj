@@ -6,11 +6,64 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		769C327D2E2B6D7E00CB76AB /* projectkisanlogo.icon in Resources */ = {isa = PBXBuildFile; fileRef = 769C327C2E2B6D7E00CB76AB /* projectkisanlogo.icon */; };
+		769C32852E2B6ED200CB76AB /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 769C32842E2B6ED200CB76AB /* WidgetKit.framework */; };
+		769C32872E2B6ED200CB76AB /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 769C32862E2B6ED200CB76AB /* SwiftUI.framework */; };
+		769C32982E2B6ED500CB76AB /* widgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 769C32822E2B6ED200CB76AB /* widgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		769C32962E2B6ED500CB76AB /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 76BA124D2E27E13F002E5CBC /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 769C32812E2B6ED200CB76AB;
+			remoteInfo = widgetExtension;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		769C329D2E2B6ED500CB76AB /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				769C32982E2B6ED500CB76AB /* widgetExtension.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
+		769C327C2E2B6D7E00CB76AB /* projectkisanlogo.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = projectkisanlogo.icon; sourceTree = "<group>"; };
+		769C32822E2B6ED200CB76AB /* widgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = widgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		769C32842E2B6ED200CB76AB /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
+		769C32862E2B6ED200CB76AB /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
 		76BA12552E27E13F002E5CBC /* ProjectKisan.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ProjectKisan.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		769C32992E2B6ED500CB76AB /* Exceptions for "widget" folder in "widgetExtension" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 769C32812E2B6ED200CB76AB /* widgetExtension */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
+		769C32882E2B6ED200CB76AB /* widget */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				769C32992E2B6ED500CB76AB /* Exceptions for "widget" folder in "widgetExtension" target */,
+			);
+			path = widget;
+			sourceTree = "<group>";
+		};
 		76BA12572E27E13F002E5CBC /* ProjectKisan */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = ProjectKisan;
@@ -19,6 +72,15 @@
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		769C327F2E2B6ED200CB76AB /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				769C32872E2B6ED200CB76AB /* SwiftUI.framework in Frameworks */,
+				769C32852E2B6ED200CB76AB /* WidgetKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		76BA12522E27E13F002E5CBC /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -29,11 +91,23 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		769C32832E2B6ED200CB76AB /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				769C32842E2B6ED200CB76AB /* WidgetKit.framework */,
+				769C32862E2B6ED200CB76AB /* SwiftUI.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		76BA124C2E27E13F002E5CBC = {
 			isa = PBXGroup;
 			children = (
 				76BA12572E27E13F002E5CBC /* ProjectKisan */,
+				769C32882E2B6ED200CB76AB /* widget */,
+				769C32832E2B6ED200CB76AB /* Frameworks */,
 				76BA12562E27E13F002E5CBC /* Products */,
+				769C327C2E2B6D7E00CB76AB /* projectkisanlogo.icon */,
 			);
 			sourceTree = "<group>";
 		};
@@ -41,6 +115,7 @@
 			isa = PBXGroup;
 			children = (
 				76BA12552E27E13F002E5CBC /* ProjectKisan.app */,
+				769C32822E2B6ED200CB76AB /* widgetExtension.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -48,6 +123,28 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		769C32812E2B6ED200CB76AB /* widgetExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 769C329A2E2B6ED500CB76AB /* Build configuration list for PBXNativeTarget "widgetExtension" */;
+			buildPhases = (
+				769C327E2E2B6ED200CB76AB /* Sources */,
+				769C327F2E2B6ED200CB76AB /* Frameworks */,
+				769C32802E2B6ED200CB76AB /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				769C32882E2B6ED200CB76AB /* widget */,
+			);
+			name = widgetExtension;
+			packageProductDependencies = (
+			);
+			productName = widgetExtension;
+			productReference = 769C32822E2B6ED200CB76AB /* widgetExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 		76BA12542E27E13F002E5CBC /* ProjectKisan */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 76BA12602E27E141002E5CBC /* Build configuration list for PBXNativeTarget "ProjectKisan" */;
@@ -55,10 +152,12 @@
 				76BA12512E27E13F002E5CBC /* Sources */,
 				76BA12522E27E13F002E5CBC /* Frameworks */,
 				76BA12532E27E13F002E5CBC /* Resources */,
+				769C329D2E2B6ED500CB76AB /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				769C32972E2B6ED500CB76AB /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				76BA12572E27E13F002E5CBC /* ProjectKisan */,
@@ -80,6 +179,9 @@
 				LastSwiftUpdateCheck = 2600;
 				LastUpgradeCheck = 2600;
 				TargetAttributes = {
+					769C32812E2B6ED200CB76AB = {
+						CreatedOnToolsVersion = 26.0;
+					};
 					76BA12542E27E13F002E5CBC = {
 						CreatedOnToolsVersion = 26.0;
 					};
@@ -100,21 +202,37 @@
 			projectRoot = "";
 			targets = (
 				76BA12542E27E13F002E5CBC /* ProjectKisan */,
+				769C32812E2B6ED200CB76AB /* widgetExtension */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		76BA12532E27E13F002E5CBC /* Resources */ = {
+		769C32802E2B6ED200CB76AB /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		76BA12532E27E13F002E5CBC /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				769C327D2E2B6D7E00CB76AB /* projectkisanlogo.icon in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		769C327E2E2B6ED200CB76AB /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		76BA12512E27E13F002E5CBC /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -124,7 +242,75 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		769C32972E2B6ED500CB76AB /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 769C32812E2B6ED200CB76AB /* widgetExtension */;
+			targetProxy = 769C32962E2B6ED500CB76AB /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
 /* Begin XCBuildConfiguration section */
+		769C329B2E2B6ED500CB76AB /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = S542YZLR3F;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = widget/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = widget;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.utsavbalhara.ProjectKisan.widget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		769C329C2E2B6ED500CB76AB /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = S542YZLR3F;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = widget/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = widget;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.utsavbalhara.ProjectKisan.widget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 		76BA125E2E27E141002E5CBC /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -258,6 +444,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = "Project Kisan";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
+				INFOPLIST_KEY_NSCameraUsageDescription = "ProjectKisan uses the camera to scan and analyze crop diseases for AI-powered plant health diagnosis";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -291,6 +478,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = "Project Kisan";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
+				INFOPLIST_KEY_NSCameraUsageDescription = "ProjectKisan uses the camera to scan and analyze crop diseases for AI-powered plant health diagnosis";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -315,6 +503,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		769C329A2E2B6ED500CB76AB /* Build configuration list for PBXNativeTarget "widgetExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				769C329B2E2B6ED500CB76AB /* Debug */,
+				769C329C2E2B6ED500CB76AB /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		76BA12502E27E13F002E5CBC /* Build configuration list for PBXProject "ProjectKisan" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

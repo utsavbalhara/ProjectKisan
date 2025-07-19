@@ -601,7 +601,7 @@ struct FullScreenImageView: View {
             }
             .padding(20)
             .frame(maxWidth: .infinity)
-            .background(Color(.systemBackground))
+            .background(Color(.systemBackground).opacity(0.01))
             .clipShape(RoundedRectangle(cornerRadius: 22))
             .padding(.horizontal, 20)
             .padding(.bottom, 30)
