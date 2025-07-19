@@ -278,7 +278,7 @@ struct CompactRecommendation: View {
                 .fill(Color.farmColors.backgroundLight)
                 .overlay(
                     RoundedRectangle(cornerRadius: 14)
-                        .stroke(Color(hex: color).opacity(0.2), lineWidth: 1)
+                        .stroke(Color(hex: color).opacity(0.2), lineWidth: 0)
                 )
         )
     }
