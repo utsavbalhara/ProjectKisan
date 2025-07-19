@@ -4,22 +4,44 @@ struct MarketplaceView: View {
     @StateObject private var marketplaceManager = MarketplaceManager.shared
     @StateObject private var productManager = ProductManager.shared
     @State private var showingCart = false
-    @State private var showingFilters = false
     @State private var selectedProduct: MarketplaceProduct?
-    @State private var searchFocused = false
+    @State private var searchText = ""
+    @State private var selectedCategory: ProductCategory? = nil
+    
+    // Limited to 8 products for better UX
+    var limitedProducts: [MarketplaceProduct] {
+        return Array(MarketplaceProduct.sampleProducts.prefix(8))
+    }
+    
+    var filteredProducts: [MarketplaceProduct] {
+        var products = limitedProducts
+        
+        if let category = selectedCategory {
+            products = products.filter { $0.category == category }
+        }
+        
+        if !searchText.isEmpty {
+            products = products.filter { product in
+                product.name.localizedCaseInsensitiveContains(searchText) ||
+                product.brand.localizedCaseInsensitiveContains(searchText)
+            }
+        }
+        
+        return products
+    }
     
     var body: some View {
         NavigationStack {
             ZStack {
-                // Modern gradient background
+                // Consistent background gradient like other views
                 LinearGradient(
                     colors: [
                         Color.farmColors.backgroundLight,
-                        Color.farmColors.backgroundMedium.opacity(0.1),
+                        Color.farmColors.backgroundMedium.opacity(0.3),
                         Color.farmColors.backgroundLight
                     ],
-                    startPoint: .topLeading,
-                    endPoint: .bottomTrailing
+                    startPoint: .top,
+                    endPoint: .bottom
                 )
                 .ignoresSafeArea()
                 
@@ -27,68 +49,62 @@ struct MarketplaceView: View {
                     LazyVStack(spacing: 24) {
                         
                         // Search Bar
-                        SearchBarView(searchFocused: $searchFocused)
+                        ConsistentSearchBar(text: $searchText)
                             .padding(.horizontal, 20)
+                            .padding(.top, 8)
                         
-                        // Category Filter
-                        CategoryFilterView()
+                        // Category Pills
+                        ConsistentCategoryView(selectedCategory: $selectedCategory)
                         
+                        // Featured Section - keeping this as you liked it
+                        FeaturedProductsSection(
+                            products: Array(limitedProducts.filter { $0.isOnSale || $0.rating >= 4.8 }.prefix(2)),
+                            onProductTap: { product in
+                                selectedProduct = product
+                            }
+                        )
                         
-                        // Products Grid
-                        ProductsGridView(selectedProduct: $selectedProduct)
+                        // Products Section
+                        VStack(alignment: .leading, spacing: 20) {
+                            HStack {
+                                Text("All Products")
+                                    .font(.title2)
+                                    .fontWeight(.bold)
+                                    .foregroundColor(Color.farmColors.textPrimary)
+                                
+                                Spacer()
+                                
+                                Text("\(filteredProducts.count) items")
+                                    .font(.subheadline)
+                                    .foregroundColor(Color.farmColors.textSecondary)
+                            }
                             .padding(.horizontal, 20)
+                            
+                            ConsistentProductGrid(
+                                products: filteredProducts,
+                                onProductTap: { product in
+                                    selectedProduct = product
+                                }
+                            )
+                            .padding(.horizontal, 20)
+                        }
                     }
                     .padding(.top, 8)
                 }
-                .refreshable {
-                    withAnimation(.spring(response: 0.6, dampingFraction: 0.8)) {
-                        marketplaceManager.loadProducts()
-                    }
-                }
             }
             .navigationTitle("Marketplace")
+            .navigationBarTitleDisplayMode(.large)
             .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Button(action: {
-                        withAnimation(.spring(response: 0.5, dampingFraction: 0.7)) {
-                            showingFilters = true
-                        }
-                    }) {
-                        Image(systemName: "slider.horizontal.3")
-                    }
-                }
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Button(action: {
-                        withAnimation(.spring(response: 0.5, dampingFraction: 0.7)) {
-                            showingCart = true
-                        }
-                    }) {
-                        ZStack {
-                            Image(systemName: "bag")
-                            if productManager.cartItemsCount > 0 {
-                                Text("\(productManager.cartItemsCount)")
-                                    .font(.caption2)
-                                    .fontWeight(.bold)
-                                    .foregroundColor(.white)
-                                    .frame(minWidth: 18, minHeight: 18)
-                                    .background(Color.red)
-                                    .clipShape(Circle())
-                                    .overlay(
-                                        Circle()
-                                            .stroke(Color.white, lineWidth: 2)
-                                    )
-                                    .offset(x: 12, y: -12)
-                            }
-                        }
-                    }
+                ToolbarItem(placement: .topBarTrailing) {
+                    ConsistentCartButton(
+                        cartCount: productManager.cartItemsCount,
+                        action: { showingCart = true }
+                    )
                 }
             }
         }
         .sheet(isPresented: $showingCart) {
             CartView()
-        }
-        .sheet(isPresented: $showingFilters) {
-            SortFilterView()
         }
         .sheet(item: $selectedProduct) { product in
             ProductDetailView(product: product)
@@ -100,34 +116,31 @@ struct MarketplaceView: View {
 }
 
 
-// MARK: - Search Bar View
-struct SearchBarView: View {
-    @StateObject private var marketplaceManager = MarketplaceManager.shared
-    @Binding var searchFocused: Bool
+// MARK: - Consistent Search Bar
+struct ConsistentSearchBar: View {
+    @Binding var text: String
+    @State private var isEditing = false
     
     var body: some View {
         HStack {
             Image(systemName: "magnifyingglass")
                 .font(.title3)
-                .foregroundColor(searchFocused ? Color.farmColors.primary : Color.farmColors.textSecondary)
-                .animation(.easeInOut(duration: 0.2), value: searchFocused)
+                .foregroundColor(isEditing ? Color.farmColors.primary : Color.farmColors.textSecondary)
+                .animation(.easeInOut(duration: 0.2), value: isEditing)
             
-            TextField("Search products...", text: Binding(
-                get: { marketplaceManager.searchText },
-                set: { marketplaceManager.updateSearchText($0) }
-            ))
-            .textFieldStyle(PlainTextFieldStyle())
-            .font(.body)
-            .onTapGesture {
-                withAnimation(.easeInOut(duration: 0.2)) {
-                    searchFocused = true
+            TextField("Search products...", text: $text)
+                .textFieldStyle(PlainTextFieldStyle())
+                .font(.body)
+                .onTapGesture {
+                    withAnimation(.easeInOut(duration: 0.2)) {
+                        isEditing = true
+                    }
                 }
-            }
             
-            if !marketplaceManager.searchText.isEmpty {
+            if !text.isEmpty {
                 Button(action: {
                     withAnimation(.easeInOut(duration: 0.2)) {
-                        marketplaceManager.updateSearchText("")
+                        text = ""
                     }
                 }) {
                     Image(systemName: "xmark.circle.fill")
@@ -139,83 +152,70 @@ struct SearchBarView: View {
         }
         .padding(.horizontal, 20)
         .padding(.vertical, 16)
-        .background(
-            RoundedRectangle(cornerRadius: 16)
-                .fill(.ultraThinMaterial)
-                .shadow(
-                    color: searchFocused ? Color.farmColors.primary.opacity(0.3) : Color.black.opacity(0.1),
-                    radius: searchFocused ? 8 : 4,
-                    x: 0,
-                    y: 2
-                )
-        )
+        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 16))
         .overlay(
             RoundedRectangle(cornerRadius: 16)
                 .stroke(
-                    searchFocused ? Color.farmColors.primary.opacity(0.5) : Color.clear,
-                    lineWidth: 2
+                    isEditing ? Color.farmColors.primary.opacity(0.5) : Color.farmColors.primary.opacity(0.2),
+                    lineWidth: 1
                 )
         )
-        .animation(.easeInOut(duration: 0.2), value: searchFocused)
+        .shadow(color: Color.farmColors.shadow, radius: isEditing ? 8 : 4, x: 0, y: 2)
+        .animation(.easeInOut(duration: 0.2), value: isEditing)
         .onTapGesture {
-            searchFocused = false
+            if isEditing {
+                isEditing = false
+                UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+            }
         }
     }
 }
 
-// MARK: - Category Filter View
-struct CategoryFilterView: View {
-    @StateObject private var marketplaceManager = MarketplaceManager.shared
+// MARK: - Consistent Category View
+struct ConsistentCategoryView: View {
+    @Binding var selectedCategory: ProductCategory?
     
     var body: some View {
         ScrollView(.horizontal, showsIndicators: false) {
             HStack(spacing: 12) {
-                // All Categories Button
-                CategoryButton(
+                // All category
+                ConsistentCategoryPill(
                     title: "All",
                     icon: "grid.circle.fill",
-                    isSelected: marketplaceManager.selectedCategory == nil
+                    isSelected: selectedCategory == nil,
+                    color: Color.farmColors.primary
                 ) {
                     withAnimation(.spring(response: 0.5, dampingFraction: 0.7)) {
-                        marketplaceManager.selectCategory(nil)
+                        selectedCategory = nil
                     }
                 }
                 
-                // Category Buttons
+                // Individual categories
                 ForEach(ProductCategory.allCases, id: \.self) { category in
-                    CategoryButton(
+                    ConsistentCategoryPill(
                         title: category.rawValue,
                         icon: category.icon,
-                        isSelected: marketplaceManager.selectedCategory == category,
+                        isSelected: selectedCategory == category,
                         color: category.color
                     ) {
                         withAnimation(.spring(response: 0.5, dampingFraction: 0.7)) {
-                            marketplaceManager.selectCategory(category)
+                            selectedCategory = selectedCategory == category ? nil : category
                         }
                     }
                 }
-                         
-                     }
-        .padding(.horizontal, 20)
-                 }
-             }
+            }
+            .padding(.horizontal, 20)
+        }
+    }
 }
 
-// MARK: - Category Button
-struct CategoryButton: View {
+// MARK: - Consistent Category Pill
+struct ConsistentCategoryPill: View {
     let title: String
     let icon: String
     let isSelected: Bool
     let color: Color
     let action: () -> Void
-    
-    init(title: String, icon: String, isSelected: Bool, color: Color = Color.farmColors.primary, action: @escaping () -> Void) {
-        self.title = title
-        self.icon = icon
-        self.isSelected = isSelected
-        self.color = color
-        self.action = action
-    }
     
     var body: some View {
         Button(action: action) {
@@ -248,11 +248,161 @@ struct CategoryButton: View {
     }
 }
 
+// MARK: - Featured Products Section
+struct FeaturedProductsSection: View {
+    let products: [MarketplaceProduct]
+    let onProductTap: (MarketplaceProduct) -> Void
+    
+    var body: some View {
+        if !products.isEmpty {
+            VStack(alignment: .leading, spacing: 16) {
+                HStack {
+                    Text("Featured")
+                        .font(.title2)
+                        .fontWeight(.bold)
+                        .foregroundStyle(.primary)
+                    
+                    Spacer()
+                    
+                    Text("Special offers")
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                }
+                .padding(.horizontal, 20)
+                
+                ScrollView(.horizontal, showsIndicators: false) {
+                    HStack(spacing: 16) {
+                        ForEach(products) { product in
+                            FeaturedProductCard(product: product) {
+                                onProductTap(product)
+                            }
+                        }
+                    }
+                    .padding(.horizontal, 20)
+                }
+            }
+        }
+    }
+}
 
-// MARK: - Products Grid View
-struct ProductsGridView: View {
-    @StateObject private var marketplaceManager = MarketplaceManager.shared
-    @Binding var selectedProduct: MarketplaceProduct?
+// MARK: - Featured Product Card
+struct FeaturedProductCard: View {
+    let product: MarketplaceProduct
+    let onTap: () -> Void
+    @StateObject private var productManager = ProductManager.shared
+    
+    var body: some View {
+        Button(action: onTap) {
+            VStack(alignment: .leading, spacing: 12) {
+                // Product image with gradient overlay
+                ZStack {
+                    RoundedRectangle(cornerRadius: 16)
+                        .fill(
+                            LinearGradient(
+                                colors: [
+                                    product.category.color.opacity(0.8),
+                                    product.category.color.opacity(0.4)
+                                ],
+                                startPoint: .topLeading,
+                                endPoint: .bottomTrailing
+                            )
+                        )
+                        .frame(width: 280, height: 140)
+                    
+                    VStack {
+                        HStack {
+                            VStack(alignment: .leading, spacing: 4) {
+                                if product.isOnSale {
+                                    Text("SAVE \(product.discountPercentage!)%")
+                                        .font(.caption)
+                                        .fontWeight(.bold)
+                                        .foregroundStyle(.white)
+                                        .padding(.horizontal, 8)
+                                        .padding(.vertical, 4)
+                                        .background(Color.red)
+                                        .clipShape(Capsule())
+                                }
+                                
+                                Text(product.name)
+                                    .font(.headline)
+                                    .fontWeight(.bold)
+                                    .foregroundStyle(.white)
+                                    .lineLimit(2)
+                                
+                                Text("by \(product.brand)")
+                                    .font(.subheadline)
+                                    .foregroundStyle(.white.opacity(0.8))
+                            }
+                            
+                            Spacer()
+                            
+                            Image(systemName: product.category.icon)
+                                .font(.system(size: 32))
+                                .foregroundStyle(.white.opacity(0.3))
+                        }
+                        .padding(.horizontal, 16)
+                        .padding(.top, 16)
+                        
+                        Spacer()
+                        
+                        HStack {
+                            VStack(alignment: .leading, spacing: 2) {
+                                HStack(spacing: 4) {
+                                    Text("$\(product.price)")
+                                        .font(.title2)
+                                        .fontWeight(.bold)
+                                        .foregroundStyle(.white)
+                                    
+                                    if let originalPrice = product.originalPrice {
+                                        Text("$\(originalPrice)")
+                                            .font(.caption)
+                                            .strikethrough()
+                                            .foregroundStyle(.white.opacity(0.7))
+                                    }
+                                }
+                                
+                                HStack(spacing: 2) {
+                                    ForEach(0..<5) { index in
+                                        Image(systemName: index < Int(product.rating) ? "star.fill" : "star")
+                                            .font(.caption2)
+                                            .foregroundStyle(.yellow)
+                                    }
+                                    
+                                    Text("(\(product.reviewCount))")
+                                        .font(.caption2)
+                                        .foregroundStyle(.white.opacity(0.8))
+                                }
+                            }
+                            
+                            Spacer()
+                            
+                            Button(action: {
+                                withAnimation(.spring(response: 0.3, dampingFraction: 0.6)) {
+                                    productManager.addToCart(product.toProduct())
+                                }
+                            }) {
+                                Image(systemName: "bag.fill")
+                                    .font(.system(size: 16, weight: .medium))
+                                    .foregroundStyle(.white)
+                                    .frame(width: 36, height: 36)
+                                    .background(Color.black.opacity(0.2))
+                                    .clipShape(Circle())
+                            }
+                        }
+                        .padding(.horizontal, 16)
+                        .padding(.bottom, 16)
+                    }
+                }
+            }
+        }
+        .buttonStyle(PlainButtonStyle())
+    }
+}
+
+// MARK: - Consistent Product Grid
+struct ConsistentProductGrid: View {
+    let products: [MarketplaceProduct]
+    let onProductTap: (MarketplaceProduct) -> Void
     
     let columns = [
         GridItem(.flexible(), spacing: 16),
@@ -260,28 +410,13 @@ struct ProductsGridView: View {
     ]
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 20) {
-            HStack {
-                Text("Products")
-                    .font(.title2)
-                    .fontWeight(.bold)
-                    .foregroundColor(Color.farmColors.textPrimary)
-                
-                Spacer()
-                
-                Text("\(marketplaceManager.filteredProducts.count) items")
-                    .font(.subheadline)
-                    .foregroundColor(Color.farmColors.textSecondary)
-            }
-            
-            if marketplaceManager.filteredProducts.isEmpty {
-                EmptyStateView()
-            } else {
-                LazyVGrid(columns: columns, spacing: 20) {
-                    ForEach(marketplaceManager.filteredProducts) { product in
-                        MarketplaceProductCard(product: product) {
-                            selectedProduct = product
-                        }
+        if products.isEmpty {
+            ConsistentEmptyState()
+        } else {
+            LazyVGrid(columns: columns, spacing: 20) {
+                ForEach(products) { product in
+                    ConsistentProductCard(product: product) {
+                        onProductTap(product)
                     }
                 }
             }
@@ -289,8 +424,8 @@ struct ProductsGridView: View {
     }
 }
 
-// MARK: - Marketplace Product Card
-struct MarketplaceProductCard: View {
+// MARK: - Consistent Product Card
+struct ConsistentProductCard: View {
     let product: MarketplaceProduct
     let onTap: () -> Void
     @StateObject private var productManager = ProductManager.shared
@@ -412,7 +547,7 @@ struct MarketplaceProductCard: View {
         .background(
             RoundedRectangle(cornerRadius: 20)
                 .fill(.ultraThinMaterial)
-                .shadow(color: Color.black.opacity(0.1), radius: 8, x: 0, y: 2)
+                .shadow(color: Color.farmColors.shadow, radius: 8, x: 0, y: 2)
         )
         .scaleEffect(isPressed ? 0.95 : 1.0)
         .onTapGesture {
@@ -429,8 +564,8 @@ struct MarketplaceProductCard: View {
     }
 }
 
-// MARK: - Empty State View
-struct EmptyStateView: View {
+// MARK: - Consistent Empty State
+struct ConsistentEmptyState: View {
     var body: some View {
         VStack(spacing: 24) {
             Image(systemName: "magnifyingglass")
@@ -453,8 +588,39 @@ struct EmptyStateView: View {
         .background(
             RoundedRectangle(cornerRadius: 24)
                 .fill(.ultraThinMaterial)
-                .shadow(color: Color.black.opacity(0.05), radius: 8, x: 0, y: 2)
+                .shadow(color: Color.farmColors.shadow.opacity(0.5), radius: 8, x: 0, y: 2)
         )
+    }
+}
+
+// MARK: - Consistent Cart Button
+struct ConsistentCartButton: View {
+    let cartCount: Int
+    let action: () -> Void
+    
+    var body: some View {
+        Button(action: action) {
+            ZStack {
+                Image(systemName: "bag")
+                    .font(.system(size: 18, weight: .medium))
+                    .foregroundColor(Color.farmColors.textPrimary)
+                
+                if cartCount > 0 {
+                    Text("\(cartCount)")
+                        .font(.caption2)
+                        .fontWeight(.bold)
+                        .foregroundColor(.white)
+                        .frame(minWidth: 18, minHeight: 18)
+                        .background(Color.red)
+                        .clipShape(Circle())
+                        .overlay(
+                            Circle()
+                                .stroke(Color.white, lineWidth: 2)
+                        )
+                        .offset(x: 12, y: -12)
+                }
+            }
+        }
     }
 }
 
