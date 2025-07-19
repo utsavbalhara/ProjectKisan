@@ -3,7 +3,7 @@ import SwiftUI
 // MARK: - Hourly Forecast View
 struct HourlyForecastView: View {
     let forecasts: [HourlyForecast]
-    
+
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
             Text("5-Hour Forecast")
@@ -11,7 +11,7 @@ struct HourlyForecastView: View {
                 .fontWeight(.semibold)
                 .foregroundColor(Color.farmColors.textPrimary)
                 .padding(.horizontal, 4)
-            
+
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: 12) {
                     ForEach(Array(forecasts.enumerated()), id: \.offset) { index, forecast in
@@ -29,46 +29,46 @@ struct HourlyForecastView: View {
 struct HourlyForecastCard: View {
     let forecast: HourlyForecast
     let isFirst: Bool
-    
+
     private var timeFormatter: DateFormatter {
         let formatter = DateFormatter()
         formatter.dateFormat = "HH:mm"
         return formatter
     }
-    
+
     var body: some View {
         VStack(spacing: 12) {
             Text(isFirst ? "Now" : timeFormatter.string(from: forecast.time))
                 .font(.caption)
                 .fontWeight(.medium)
                 .foregroundColor(isFirst ? Color.farmColors.primary : Color.farmColors.textSecondary)
-            
+
             Image(systemName: forecast.condition.icon)
                 .font(.title2)
                 .foregroundColor(Color(hex: forecast.condition.color))
                 .frame(height: 30)
-            
+
             Text("\(Int(forecast.temperature.rounded()))°")
                 .font(.subheadline)
                 .fontWeight(.semibold)
                 .foregroundColor(Color.farmColors.textPrimary)
-            
+
             VStack(spacing: 4) {
                 HStack(spacing: 4) {
                     Image(systemName: "drop.fill")
                         .font(.caption2)
                         .foregroundColor(Color.farmColors.primary)
-                    
+
                     Text("\(Int(forecast.precipitationProbability.rounded()))%")
                         .font(.caption2)
                         .foregroundColor(Color.farmColors.textSecondary)
                 }
-                
+
                 HStack(spacing: 4) {
                     Image(systemName: "wind")
                         .font(.caption2)
                         .foregroundColor(Color.farmColors.primary)
-                    
+
                     Text("\(Int(forecast.windSpeed.rounded()))")
                         .font(.caption2)
                         .foregroundColor(Color.farmColors.textSecondary)
@@ -78,10 +78,10 @@ struct HourlyForecastCard: View {
         .padding(.vertical, 16)
         .padding(.horizontal, 12)
         .background(
-            RoundedRectangle(cornerRadius: 16)
+            RoundedRectangle(cornerRadius: 18)
                 .fill(isFirst ? Color.farmColors.primary.opacity(0.1) : Color.farmColors.surface)
                 .overlay(
-                    RoundedRectangle(cornerRadius: 16)
+                    RoundedRectangle(cornerRadius: 18)
                         .stroke(isFirst ? Color.farmColors.primary.opacity(0.3) : Color.clear, lineWidth: 1)
                 )
                 .shadow(color: Color.black.opacity(0.05), radius: 6)
@@ -95,7 +95,7 @@ struct DetailedConditionsView: View {
     let currentWeather: CurrentWeather
     let sunTimes: SunTimes
     let airQuality: AirQuality
-    
+
     var body: some View {
         VStack(spacing: 16) {
             // Weather Details Grid
@@ -106,21 +106,21 @@ struct DetailedConditionsView: View {
                     value: "\(Int(currentWeather.feelsLike.rounded()))°C",
                     subtitle: "Actual: \(Int(currentWeather.temperature.rounded()))°C"
                 )
-                
+
                 DetailCard(
                     icon: "drop.fill",
                     title: "Dew Point",
                     value: "\(Int(currentWeather.dewPoint.rounded()))°C",
                     subtitle: "Humidity: \(Int(currentWeather.humidity.rounded()))%"
                 )
-                
+
                 DetailCard(
                     icon: "wind",
                     title: "Wind",
                     value: "\(Int(currentWeather.windSpeed.rounded())) km/h",
                     subtitle: "Direction: \(currentWeather.windDirection)"
                 )
-                
+
                 DetailCard(
                     icon: "barometer",
                     title: "Pressure",
@@ -128,10 +128,10 @@ struct DetailedConditionsView: View {
                     subtitle: "Sea Level"
                 )
             }
-            
+
             // Sun Times
             SunTimesCard(sunTimes: sunTimes)
-            
+
             // Air Quality
             AirQualityCard(airQuality: airQuality)
         }
@@ -144,27 +144,27 @@ struct DetailCard: View {
     let title: String
     let value: String
     let subtitle: String
-    
+
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             HStack {
                 Image(systemName: icon)
                     .font(.title3)
                     .foregroundColor(Color.farmColors.primary)
-                
+
                 Spacer()
             }
-            
+
             VStack(alignment: .leading, spacing: 4) {
                 Text(title)
                     .font(.caption)
                     .foregroundColor(Color.farmColors.textSecondary)
-                
+
                 Text(value)
                     .font(.title3)
                     .fontWeight(.semibold)
                     .foregroundColor(Color.farmColors.textPrimary)
-                
+
                 Text(subtitle)
                     .font(.caption2)
                     .foregroundColor(Color.farmColors.textSecondary)
@@ -172,7 +172,7 @@ struct DetailCard: View {
         }
         .padding(16)
         .background(
-            RoundedRectangle(cornerRadius: 12)
+            RoundedRectangle(cornerRadius: 16)
                 .fill(Color.farmColors.surface)
                 .shadow(color: Color.black.opacity(0.05), radius: 6)
         )
@@ -181,35 +181,35 @@ struct DetailCard: View {
 
 struct SunTimesCard: View {
     let sunTimes: SunTimes
-    
+
     private var timeFormatter: DateFormatter {
         let formatter = DateFormatter()
         formatter.dateFormat = "HH:mm"
         return formatter
     }
-    
+
     private var durationFormatter: DateComponentsFormatter {
         let formatter = DateComponentsFormatter()
         formatter.allowedUnits = [.hour, .minute]
         formatter.unitsStyle = .abbreviated
         return formatter
     }
-    
+
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             HStack {
                 Image(systemName: "sun.max.fill")
                     .font(.title3)
                     .foregroundColor(.orange)
-                
+
                 Text("Sun Times")
                     .font(.headline)
                     .fontWeight(.semibold)
                     .foregroundColor(Color.farmColors.textPrimary)
-                
+
                 Spacer()
             }
-            
+
             HStack {
                 VStack(spacing: 8) {
                     SunTimeItem(
@@ -218,7 +218,7 @@ struct SunTimesCard: View {
                         time: timeFormatter.string(from: sunTimes.sunrise),
                         color: .orange
                     )
-                    
+
                     SunTimeItem(
                         icon: "sunset.fill",
                         label: "Sunset",
@@ -226,26 +226,26 @@ struct SunTimesCard: View {
                         color: .red
                     )
                 }
-                
+
                 Spacer()
-                
+
                 VStack(alignment: .trailing, spacing: 8) {
                     VStack(alignment: .trailing, spacing: 2) {
                         Text("Daylight")
                             .font(.caption)
                             .foregroundColor(Color.farmColors.textSecondary)
-                        
+
                         Text(durationFormatter.string(from: sunTimes.dayLength) ?? "")
                             .font(.subheadline)
                             .fontWeight(.semibold)
                             .foregroundColor(Color.farmColors.textPrimary)
                     }
-                    
+
                     VStack(alignment: .trailing, spacing: 2) {
                         Text("Solar Noon")
                             .font(.caption)
                             .foregroundColor(Color.farmColors.textSecondary)
-                        
+
                         Text(timeFormatter.string(from: sunTimes.solarNoon))
                             .font(.subheadline)
                             .fontWeight(.semibold)
@@ -256,7 +256,7 @@ struct SunTimesCard: View {
         }
         .padding(16)
         .background(
-            RoundedRectangle(cornerRadius: 16)
+            RoundedRectangle(cornerRadius: 22)
                 .fill(Color.farmColors.surface)
                 .shadow(color: Color.black.opacity(0.05), radius: 6)
         )
@@ -268,24 +268,24 @@ struct SunTimeItem: View {
     let label: String
     let time: String
     let color: Color
-    
+
     var body: some View {
         HStack(spacing: 8) {
             Image(systemName: icon)
                 .font(.subheadline)
                 .foregroundColor(color)
-            
+
             VStack(alignment: .leading, spacing: 2) {
                 Text(label)
                     .font(.caption)
                     .foregroundColor(Color.farmColors.textSecondary)
-                
+
                 Text(time)
                     .font(.subheadline)
                     .fontWeight(.semibold)
                     .foregroundColor(Color.farmColors.textPrimary)
             }
-            
+
             Spacer()
         }
     }
@@ -293,33 +293,33 @@ struct SunTimeItem: View {
 
 struct AirQualityCard: View {
     let airQuality: AirQuality
-    
+
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             HStack {
                 Image(systemName: "lungs.fill")
                     .font(.title3)
                     .foregroundColor(Color(hex: airQuality.category.color))
-                
+
                 VStack(alignment: .leading, spacing: 2) {
                     Text("Air Quality")
                         .font(.headline)
                         .fontWeight(.semibold)
                         .foregroundColor(Color.farmColors.textPrimary)
-                    
+
                     Text(airQuality.category.rawValue)
                         .font(.caption)
                         .foregroundColor(Color(hex: airQuality.category.color))
                 }
-                
+
                 Spacer()
-                
+
                 Text("\(airQuality.aqi)")
                     .font(.title)
                     .fontWeight(.bold)
                     .foregroundColor(Color(hex: airQuality.category.color))
             }
-            
+
             LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 3), spacing: 8) {
                 ForEach(Array(airQuality.pollutants.keys.sorted()), id: \.self) { pollutant in
                     if let value = airQuality.pollutants[pollutant] {
@@ -330,7 +330,7 @@ struct AirQualityCard: View {
         }
         .padding(16)
         .background(
-            RoundedRectangle(cornerRadius: 16)
+            RoundedRectangle(cornerRadius: 22)
                 .fill(Color.farmColors.surface)
                 .shadow(color: Color.black.opacity(0.05), radius: 6)
         )
@@ -340,14 +340,14 @@ struct AirQualityCard: View {
 struct PollutantItem: View {
     let name: String
     let value: Double
-    
+
     var body: some View {
         VStack(spacing: 4) {
             Text(name)
                 .font(.caption2)
                 .fontWeight(.medium)
                 .foregroundColor(Color.farmColors.textSecondary)
-            
+
             Text(String(format: "%.1f", value))
                 .font(.caption)
                 .fontWeight(.semibold)
@@ -356,7 +356,7 @@ struct PollutantItem: View {
         .padding(.vertical, 6)
         .padding(.horizontal, 8)
         .background(
-            RoundedRectangle(cornerRadius: 8)
+            RoundedRectangle(cornerRadius: 12)
                 .fill(Color.farmColors.backgroundLight)
         )
     }
@@ -365,7 +365,7 @@ struct PollutantItem: View {
 // MARK: - Farm Conditions View
 struct FarmConditionsView: View {
     let conditions: FarmConditions
-    
+
     var body: some View {
         VStack(spacing: 16) {
             // Farm Metrics Grid
@@ -377,7 +377,7 @@ struct FarmConditionsView: View {
                     status: getSoilMoistureStatus(conditions.soilMoisture),
                     color: getSoilMoistureColor(conditions.soilMoisture)
                 )
-                
+
                 FarmMetricCard(
                     icon: "thermometer",
                     title: "Soil Temperature",
@@ -385,7 +385,7 @@ struct FarmConditionsView: View {
                     status: "Optimal",
                     color: "#51CF66"
                 )
-                
+
                 FarmMetricCard(
                     icon: "chart.line.uptrend.xyaxis",
                     title: "Growing Degree Days",
@@ -393,7 +393,7 @@ struct FarmConditionsView: View {
                     status: "On Track",
                     color: "#FFB946"
                 )
-                
+
                 FarmMetricCard(
                     icon: "humidity.fill",
                     title: "Evapotranspiration",
@@ -402,7 +402,7 @@ struct FarmConditionsView: View {
                     color: "#4DABF7"
                 )
             }
-            
+
             // Recommendations
             VStack(spacing: 12) {
                 IrrigationRecommendationCard(recommendation: conditions.irrigationRecommendation)
@@ -411,7 +411,7 @@ struct FarmConditionsView: View {
         }
         .padding(.vertical, 8)
     }
-    
+
     private func getSoilMoistureStatus(_ moisture: Double) -> String {
         switch moisture {
         case 0..<30:
@@ -424,7 +424,7 @@ struct FarmConditionsView: View {
             return "Very High"
         }
     }
-    
+
     private func getSoilMoistureColor(_ moisture: Double) -> String {
         switch moisture {
         case 0..<30:
@@ -445,27 +445,27 @@ struct FarmMetricCard: View {
     let value: String
     let status: String
     let color: String
-    
+
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             HStack {
                 Image(systemName: icon)
                     .font(.title3)
                     .foregroundColor(Color(hex: color))
-                
+
                 Spacer()
             }
-            
+
             VStack(alignment: .leading, spacing: 4) {
                 Text(title)
                     .font(.caption)
                     .foregroundColor(Color.farmColors.textSecondary)
-                
+
                 Text(value)
                     .font(.title3)
                     .fontWeight(.semibold)
                     .foregroundColor(Color.farmColors.textPrimary)
-                
+
                 Text(status)
                     .font(.caption2)
                     .fontWeight(.medium)
@@ -480,7 +480,7 @@ struct FarmMetricCard: View {
         }
         .padding(16)
         .background(
-            RoundedRectangle(cornerRadius: 12)
+            RoundedRectangle(cornerRadius: 16)
                 .fill(Color.farmColors.surface)
                 .shadow(color: Color.black.opacity(0.05), radius: 6)
         )
@@ -489,49 +489,49 @@ struct FarmMetricCard: View {
 
 struct IrrigationRecommendationCard: View {
     let recommendation: IrrigationRecommendation
-    
+
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             HStack {
                 Image(systemName: "drop.circle.fill")
                     .font(.title3)
                     .foregroundColor(Color(hex: recommendation.color))
-                
+
                 VStack(alignment: .leading, spacing: 2) {
                     Text("Irrigation Recommendation")
                         .font(.headline)
                         .fontWeight(.semibold)
                         .foregroundColor(Color.farmColors.textPrimary)
-                    
+
                     Text(recommendation.rawValue)
                         .font(.subheadline)
                         .fontWeight(.medium)
                         .foregroundColor(Color(hex: recommendation.color))
                 }
-                
+
                 Spacer()
-                
+
                 Image(systemName: getIrrigationIcon(recommendation))
                     .font(.title2)
                     .foregroundColor(Color(hex: recommendation.color))
             }
-            
+
             Text(getIrrigationAdvice(recommendation))
                 .font(.subheadline)
                 .foregroundColor(Color.farmColors.textSecondary)
         }
         .padding(16)
         .background(
-            RoundedRectangle(cornerRadius: 16)
+            RoundedRectangle(cornerRadius: 22)
                 .fill(Color.farmColors.surface)
                 .overlay(
-                    RoundedRectangle(cornerRadius: 16)
+                    RoundedRectangle(cornerRadius: 22)
                         .stroke(Color(hex: recommendation.color).opacity(0.3), lineWidth: 1)
                 )
                 .shadow(color: Color.black.opacity(0.05), radius: 6)
         )
     }
-    
+
     private func getIrrigationIcon(_ recommendation: IrrigationRecommendation) -> String {
         switch recommendation {
         case .notNeeded:
@@ -544,7 +544,7 @@ struct IrrigationRecommendationCard: View {
             return "alarm.fill"
         }
     }
-    
+
     private func getIrrigationAdvice(_ recommendation: IrrigationRecommendation) -> String {
         switch recommendation {
         case .notNeeded:
@@ -561,49 +561,49 @@ struct IrrigationRecommendationCard: View {
 
 struct SprayingConditionsCard: View {
     let conditions: SprayingConditions
-    
+
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             HStack {
                 Image(systemName: "spray.fill")
                     .font(.title3)
                     .foregroundColor(Color(hex: conditions.color))
-                
+
                 VStack(alignment: .leading, spacing: 2) {
                     Text("Spraying Conditions")
                         .font(.headline)
                         .fontWeight(.semibold)
                         .foregroundColor(Color.farmColors.textPrimary)
-                    
+
                     Text(conditions.rawValue)
                         .font(.subheadline)
                         .fontWeight(.medium)
                         .foregroundColor(Color(hex: conditions.color))
                 }
-                
+
                 Spacer()
-                
+
                 Image(systemName: getSprayingIcon(conditions))
                     .font(.title2)
                     .foregroundColor(Color(hex: conditions.color))
             }
-            
+
             Text(getSprayingAdvice(conditions))
                 .font(.subheadline)
                 .foregroundColor(Color.farmColors.textSecondary)
         }
         .padding(16)
         .background(
-            RoundedRectangle(cornerRadius: 16)
+            RoundedRectangle(cornerRadius: 22)
                 .fill(Color.farmColors.surface)
                 .overlay(
-                    RoundedRectangle(cornerRadius: 16)
+                    RoundedRectangle(cornerRadius: 22)
                         .stroke(Color(hex: conditions.color).opacity(0.3), lineWidth: 1)
                 )
                 .shadow(color: Color.black.opacity(0.05), radius: 6)
         )
     }
-    
+
     private func getSprayingIcon(_ conditions: SprayingConditions) -> String {
         switch conditions {
         case .ideal:
@@ -616,7 +616,7 @@ struct SprayingConditionsCard: View {
             return "xmark.circle.fill"
         }
     }
-    
+
     private func getSprayingAdvice(_ conditions: SprayingConditions) -> String {
         switch conditions {
         case .ideal:
@@ -635,13 +635,13 @@ struct SprayingConditionsCard: View {
     ScrollView {
         VStack(spacing: 20) {
             HourlyForecastView(forecasts: ComprehensiveWeather.sampleData.forecast)
-            
+
             DetailedConditionsView(
                 currentWeather: ComprehensiveWeather.sampleData.currentWeather,
                 sunTimes: ComprehensiveWeather.sampleData.sunTimes,
                 airQuality: ComprehensiveWeather.sampleData.airQuality
             )
-            
+
             FarmConditionsView(conditions: ComprehensiveWeather.sampleData.farmConditions)
         }
         .padding()

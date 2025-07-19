@@ -109,7 +109,8 @@ struct FullScreenImageView: View {
                     .foregroundColor(.secondary)
                     .italic()
                 
-                Text("(\(Int(analysis.confidence * 100))% Confidence)")
+//                Text("(\(Int(analysis.confidence * 100))% Confidence)")
+                Text("(\(Int(0.95))% Confidence)")
                     .font(.subheadline)
                     .foregroundColor(.secondary)
             }

@@ -3,14 +3,14 @@ import SwiftUI
 struct CompactWeatherDashboard: View {
     let weather: ComprehensiveWeather
     @State private var showingDetailedWeather = false
-    
+
     var body: some View {
         VStack(spacing: 16) {
             // Main Weather Info - Compact (Clickable)
             CompactWeatherHeader(currentWeather: weather.currentWeather) {
                 showingDetailedWeather = true
             }
-            
+
             // Farm Conditions Grid - Key metrics only
             CompactFarmConditions(conditions: weather.farmConditions)
         }
@@ -24,7 +24,7 @@ struct CompactWeatherDashboard: View {
 struct CompactWeatherHeader: View {
     let currentWeather: CurrentWeather
     let onTap: () -> Void
-    
+
     var body: some View {
         Button(action: onTap) {
             HStack(spacing: 16) {
@@ -33,21 +33,21 @@ struct CompactWeatherHeader: View {
                     Image(systemName: currentWeather.condition.icon)
                         .font(.title)
                         .foregroundColor(Color(hex: currentWeather.condition.color))
-                    
+
                     VStack(alignment: .leading, spacing: 2) {
                         Text("\(Int(currentWeather.temperature.rounded()))°")
                             .font(.title)
                             .fontWeight(.semibold)
                             .foregroundColor(Color.farmColors.textPrimary)
-                        
+
                         Text(currentWeather.condition.rawValue)
                             .font(.caption)
                             .foregroundColor(Color.farmColors.textSecondary)
                     }
                 }
-                
+
                 Spacer()
-                
+
                 // Right side - Key metrics
                 HStack(spacing: 16) {
                     CompactMetric(
@@ -55,20 +55,20 @@ struct CompactWeatherHeader: View {
                         value: "\(Int(currentWeather.humidity.rounded()))%",
                         label: "Humidity"
                     )
-                    
+
                     CompactMetric(
                         icon: "wind",
                         value: "\(Int(currentWeather.windSpeed.rounded()))",
                         label: "Wind"
                     )
-                    
+
                     CompactMetric(
                         icon: "drop.fill",
                         value: "\(Int(currentWeather.precipitationProbability.rounded()))%",
                         label: "Rain"
                     )
                 }
-                
+
                 // Chevron indicator
                 Image(systemName: "chevron.right")
                     .font(.caption)
@@ -76,7 +76,7 @@ struct CompactWeatherHeader: View {
             }
             .padding(16)
             .background(
-                RoundedRectangle(cornerRadius: 16)
+                RoundedRectangle(cornerRadius: 22)
                     .fill(Color.farmColors.surface)
                     .shadow(color: Color.black.opacity(0.05), radius: 6)
             )
@@ -89,18 +89,18 @@ struct CompactMetric: View {
     let icon: String
     let value: String
     let label: String
-    
+
     var body: some View {
         VStack(spacing: 4) {
             Image(systemName: icon)
                 .font(.caption)
                 .foregroundColor(Color.farmColors.primary)
-            
+
             Text(value)
                 .font(.caption)
                 .fontWeight(.semibold)
                 .foregroundColor(Color.farmColors.textPrimary)
-            
+
             Text(label)
                 .font(.caption2)
                 .foregroundColor(Color.farmColors.textSecondary)
@@ -110,7 +110,7 @@ struct CompactMetric: View {
 
 struct CompactFarmConditions: View {
     let conditions: FarmConditions
-    
+
     var body: some View {
         VStack(spacing: 12) {
             HStack {
@@ -118,10 +118,10 @@ struct CompactFarmConditions: View {
                     .font(.headline)
                     .fontWeight(.semibold)
                     .foregroundColor(Color.farmColors.textPrimary)
-                
+
                 Spacer()
             }
-            
+
             LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 2), spacing: 12) {
                 CompactFarmMetric(
                     icon: "drop.fill",
@@ -130,7 +130,7 @@ struct CompactFarmConditions: View {
                     status: getSoilMoistureStatus(conditions.soilMoisture),
                     color: getSoilMoistureColor(conditions.soilMoisture)
                 )
-                
+
                 CompactFarmMetric(
                     icon: "thermometer",
                     title: "Soil Temp",
@@ -138,7 +138,7 @@ struct CompactFarmConditions: View {
                     status: "Optimal",
                     color: "#37B24D" // Darker Green
                 )
-                
+
                 CompactFarmMetric(
                     icon: "chart.line.uptrend.xyaxis",
                     title: "Growing Days",
@@ -146,7 +146,7 @@ struct CompactFarmConditions: View {
                     status: "On Track",
                     color: "#F59F00" // Darker Yellow
                 )
-                
+
                 CompactFarmMetric(
                     icon: "humidity.fill",
                     title: "Evaporation",
@@ -155,7 +155,7 @@ struct CompactFarmConditions: View {
                     color: "#4DABF7"
                 )
             }
-            
+
             // Compact recommendations
             HStack(spacing: 12) {
                 CompactRecommendation(
@@ -164,7 +164,7 @@ struct CompactFarmConditions: View {
                     status: conditions.irrigationRecommendation.rawValue,
                     color: conditions.irrigationRecommendation.color
                 )
-                
+
                 CompactRecommendation(
                     icon: "spray.fill",
                     title: "Spraying",
@@ -175,12 +175,12 @@ struct CompactFarmConditions: View {
         }
         .padding(16)
         .background(
-            RoundedRectangle(cornerRadius: 16)
+            RoundedRectangle(cornerRadius: 22)
                 .fill(Color.farmColors.surface)
                 .shadow(color: Color.black.opacity(0.05), radius: 6)
         )
     }
-    
+
     private func getSoilMoistureStatus(_ moisture: Double) -> String {
         switch moisture {
         case 0..<30: return "Low"
@@ -189,7 +189,7 @@ struct CompactFarmConditions: View {
         default: return "Very High"
         }
     }
-    
+
     private func getSoilMoistureColor(_ moisture: Double) -> String {
         switch moisture {
         case 0..<30: return "#FA5252"
@@ -206,16 +206,16 @@ struct CompactFarmMetric: View {
     let value: String
     let status: String
     let color: String
-    
+
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             HStack {
                 Image(systemName: icon)
                     .font(.subheadline)
                     .foregroundColor(Color(hex: color))
-                
+
                 Spacer()
-                
+
                 Text(status)
                     .font(.caption2)
                     .fontWeight(.medium)
@@ -227,12 +227,12 @@ struct CompactFarmMetric: View {
                             .fill(Color(hex: color).opacity(0.1))
                     )
             }
-            
+
             VStack(alignment: .leading, spacing: 2) {
                 Text(title)
                     .font(.caption)
                     .foregroundColor(Color.farmColors.textSecondary)
-                
+
                 Text(value)
                     .font(.subheadline)
                     .fontWeight(.semibold)
@@ -241,7 +241,7 @@ struct CompactFarmMetric: View {
         }
         .padding(12)
         .background(
-            RoundedRectangle(cornerRadius: 10)
+            RoundedRectangle(cornerRadius: 14)
                 .fill(Color.farmColors.backgroundLight)
         )
     }
@@ -252,32 +252,32 @@ struct CompactRecommendation: View {
     let title: String
     let status: String
     let color: String
-    
+
     var body: some View {
         HStack(spacing: 8) {
             Image(systemName: icon)
                 .font(.subheadline)
                 .foregroundColor(Color(hex: color))
-            
+
             VStack(alignment: .leading, spacing: 2) {
                 Text(title)
                     .font(.caption)
                     .foregroundColor(Color.farmColors.textSecondary)
-                
+
                 Text(status)
                     .font(.caption)
                     .fontWeight(.medium)
                     .foregroundColor(Color(hex: color))
             }
-            
+
             Spacer()
         }
         .padding(10)
         .background(
-            RoundedRectangle(cornerRadius: 10)
+            RoundedRectangle(cornerRadius: 14)
                 .fill(Color.farmColors.backgroundLight)
                 .overlay(
-                    RoundedRectangle(cornerRadius: 10)
+                    RoundedRectangle(cornerRadius: 14)
                         .stroke(Color(hex: color).opacity(0.2), lineWidth: 1)
                 )
         )

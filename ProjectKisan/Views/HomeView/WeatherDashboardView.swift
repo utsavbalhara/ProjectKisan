@@ -3,17 +3,17 @@ import SwiftUI
 struct WeatherDashboardView: View {
     let weather: ComprehensiveWeather
     @State private var selectedTab = 0
-    
+
     var body: some View {
         VStack(spacing: 20) {
             // Main Weather Header
             MainWeatherCard(weather: weather.currentWeather)
-            
+
             // Weather Alerts (if any)
             if !weather.alerts.isEmpty {
                 WeatherAlertsView(alerts: weather.alerts)
             }
-            
+
             // Tabbed Content
             VStack(spacing: 16) {
                 // Tab Selector
@@ -28,29 +28,29 @@ struct WeatherDashboardView: View {
                                 Image(systemName: tabIcon(for: index))
                                     .font(.title2)
                                     .foregroundColor(selectedTab == index ? .white : Color.farmColors.textSecondary)
-                                
+
                                 Text(tabTitle(for: index))
                                     .font(.caption)
                                     .fontWeight(.medium)
                                     .foregroundColor(selectedTab == index ? .white : Color.farmColors.textSecondary)
                             }
                             .frame(maxWidth: .infinity)
-                            .padding(.vertical, 12)
-                            .background(
-                                RoundedRectangle(cornerRadius: 16)
-                                    .fill(selectedTab == index ? Color.farmColors.primary : Color.clear)
-                            )
+                                .padding(.vertical, 12)
+                                .background(
+                                    RoundedRectangle(cornerRadius: 18)
+                                        .fill(selectedTab == index ? Color.farmColors.primary : Color.clear)
+                                )
+                            }
                         }
                     }
-                }
-                .padding(.horizontal, 4)
-                .padding(.vertical, 4)
-                .background(
-                    RoundedRectangle(cornerRadius: 20)
-                        .fill(Color.farmColors.surface)
-                        .shadow(color: Color.black.opacity(0.05), radius: 6)
-                )
-                
+                    .padding(.horizontal, 4)
+                    .padding(.vertical, 4)
+                    .background(
+                        RoundedRectangle(cornerRadius: 22)
+                            .fill(Color.farmColors.surface)
+                            .shadow(color: Color.black.opacity(0.05), radius: 6)
+                    )
+
                 // Tab Content
                 Group {
                     switch selectedTab {
@@ -76,7 +76,7 @@ struct WeatherDashboardView: View {
         }
         .padding(.horizontal, 16)
     }
-    
+
     private func tabIcon(for index: Int) -> String {
         switch index {
         case 0: return "clock.fill"
@@ -85,7 +85,7 @@ struct WeatherDashboardView: View {
         default: return "questionmark"
         }
     }
-    
+
     private func tabTitle(for index: Int) -> String {
         switch index {
         case 0: return "Hourly"
@@ -98,7 +98,7 @@ struct WeatherDashboardView: View {
 
 struct MainWeatherCard: View {
     let weather: CurrentWeather
-    
+
     var body: some View {
         VStack(spacing: 16) {
             HStack {
@@ -107,39 +107,39 @@ struct MainWeatherCard: View {
                         Image(systemName: weather.condition.icon)
                             .font(.largeTitle)
                             .foregroundColor(Color(hex: weather.condition.color))
-                        
+
                         VStack(alignment: .leading) {
                             Text("\(Int(weather.temperature.rounded()))°")
                                 .font(.system(size: 48, weight: .thin, design: .rounded))
                                 .foregroundColor(Color.farmColors.textPrimary)
-                            
+
                             Text("Feels like \(Int(weather.feelsLike.rounded()))°")
                                 .font(.subheadline)
                                 .foregroundColor(Color.farmColors.textSecondary)
                         }
                     }
-                    
+
                     Text(weather.condition.rawValue)
                         .font(.title3)
                         .fontWeight(.medium)
                         .foregroundColor(Color.farmColors.textPrimary)
                 }
-                
+
                 Spacer()
-                
+
                 VStack(alignment: .trailing, spacing: 8) {
                     WeatherMetricView(
                         icon: "humidity.fill",
                         value: "\(Int(weather.humidity.rounded()))%",
                         label: "Humidity"
                     )
-                    
+
                     WeatherMetricView(
                         icon: "wind",
                         value: "\(Int(weather.windSpeed.rounded())) km/h",
                         label: "Wind"
                     )
-                    
+
                     WeatherMetricView(
                         icon: "drop.fill",
                         value: "\(Int(weather.precipitationProbability.rounded()))%",
@@ -147,7 +147,7 @@ struct MainWeatherCard: View {
                     )
                 }
             }
-            
+
             // Quick Stats Row
             HStack(spacing: 0) {
                 QuickStatView(
@@ -155,19 +155,19 @@ struct MainWeatherCard: View {
                     value: "\(Int(weather.visibility.rounded())) km",
                     label: "Visibility"
                 )
-                
+
                 Divider()
                     .frame(height: 40)
-                
+
                 QuickStatView(
                     icon: "barometer",
                     value: "\(Int(weather.pressure.rounded())) hPa",
                     label: "Pressure"
                 )
-                
+
                 Divider()
                     .frame(height: 40)
-                
+
                 QuickStatView(
                     icon: "sun.max.fill",
                     value: "\(weather.uvIndex)",
@@ -178,7 +178,7 @@ struct MainWeatherCard: View {
         }
         .padding(20)
         .background(
-            RoundedRectangle(cornerRadius: 24)
+            RoundedRectangle(cornerRadius: 22)
                 .fill(Color.farmColors.surface)
                 .shadow(color: Color.black.opacity(0.05), radius: 6)
         )
@@ -189,20 +189,20 @@ struct WeatherMetricView: View {
     let icon: String
     let value: String
     let label: String
-    
+
     var body: some View {
         VStack(alignment: .trailing, spacing: 4) {
             HStack(spacing: 6) {
                 Image(systemName: icon)
                     .font(.caption)
                     .foregroundColor(Color.farmColors.primary)
-                
+
                 Text(value)
                     .font(.subheadline)
                     .fontWeight(.semibold)
                     .foregroundColor(Color.farmColors.textPrimary)
             }
-            
+
             Text(label)
                 .font(.caption2)
                 .foregroundColor(Color.farmColors.textSecondary)
@@ -214,18 +214,18 @@ struct QuickStatView: View {
     let icon: String
     let value: String
     let label: String
-    
+
     var body: some View {
         VStack(spacing: 6) {
             Image(systemName: icon)
                 .font(.title3)
                 .foregroundColor(Color.farmColors.primary)
-            
+
             Text(value)
                 .font(.subheadline)
                 .fontWeight(.semibold)
                 .foregroundColor(Color.farmColors.textPrimary)
-            
+
             Text(label)
                 .font(.caption2)
                 .foregroundColor(Color.farmColors.textSecondary)
@@ -236,7 +236,7 @@ struct QuickStatView: View {
 
 struct WeatherAlertsView: View {
     let alerts: [WeatherAlert]
-    
+
     var body: some View {
         VStack(spacing: 12) {
             ForEach(alerts, id: \.id) { alert in
@@ -249,7 +249,7 @@ struct WeatherAlertsView: View {
 struct WeatherAlertCard: View {
     let alert: WeatherAlert
     @State private var isExpanded = false
-    
+
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             HStack {
@@ -261,13 +261,13 @@ struct WeatherAlertCard: View {
                         Circle()
                             .fill(Color(hex: alert.severity.color))
                     )
-                
+
                 VStack(alignment: .leading, spacing: 4) {
                     Text(alert.title)
                         .font(.headline)
                         .fontWeight(.semibold)
                         .foregroundColor(Color.farmColors.textPrimary)
-                    
+
                     Text(alert.severity.rawValue)
                         .font(.caption)
                         .fontWeight(.medium)
@@ -279,9 +279,9 @@ struct WeatherAlertCard: View {
                                 .fill(Color(hex: alert.severity.color).opacity(0.1))
                         )
                 }
-                
+
                 Spacer()
-                
+
                 Button(action: {
                     withAnimation(.easeInOut(duration: 0.3)) {
                         isExpanded.toggle()
@@ -293,39 +293,39 @@ struct WeatherAlertCard: View {
                         .rotationEffect(.degrees(isExpanded ? 180 : 0))
                 }
             }
-            
+
             if isExpanded {
                 VStack(alignment: .leading, spacing: 12) {
                     Text(alert.description)
                         .font(.subheadline)
                         .foregroundColor(Color.farmColors.textSecondary)
-                    
+
                     if !alert.impact.isEmpty {
                         VStack(alignment: .leading, spacing: 4) {
                             Text("Impact:")
                                 .font(.caption)
                                 .fontWeight(.semibold)
                                 .foregroundColor(Color.farmColors.textPrimary)
-                            
+
                             Text(alert.impact)
                                 .font(.caption)
                                 .foregroundColor(Color.farmColors.textSecondary)
                         }
                     }
-                    
+
                     if !alert.recommendations.isEmpty {
                         VStack(alignment: .leading, spacing: 8) {
                             Text("Recommendations:")
                                 .font(.caption)
                                 .fontWeight(.semibold)
                                 .foregroundColor(Color.farmColors.textPrimary)
-                            
+
                             ForEach(alert.recommendations, id: \.self) { recommendation in
                                 HStack(alignment: .top, spacing: 8) {
                                     Image(systemName: "checkmark.circle.fill")
                                         .font(.caption)
                                         .foregroundColor(Color.farmColors.primary)
-                                    
+
                                     Text(recommendation)
                                         .font(.caption)
                                         .foregroundColor(Color.farmColors.textSecondary)
@@ -342,10 +342,10 @@ struct WeatherAlertCard: View {
         }
         .padding(16)
         .background(
-            RoundedRectangle(cornerRadius: 16)
+            RoundedRectangle(cornerRadius: 22)
                 .fill(Color.farmColors.surface)
                 .overlay(
-                    RoundedRectangle(cornerRadius: 16)
+                    RoundedRectangle(cornerRadius: 22)
                         .stroke(Color(hex: alert.severity.color).opacity(0.3), lineWidth: 1)
                 )
                 .shadow(color: Color.black.opacity(0.05), radius: 6)
