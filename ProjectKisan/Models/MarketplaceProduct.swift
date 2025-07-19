@@ -108,9 +108,10 @@ extension MarketplaceProduct {
         MarketplaceProduct(
             name: "GrowMax Plant Nutrient",
             category: .farmicides,
-            price: 45,
-            originalPrice: 55,
+            price: 1450,
+            originalPrice: 1550,
             description: "Advanced plant nutrition formula for healthy crop growth",
+            imageURL: "growmax_nutrient",
             rating: 4.8,
             reviewCount: 124,
             features: ["Balanced NPK formula", "Improves soil health", "Organic certified"],
@@ -120,8 +121,9 @@ extension MarketplaceProduct {
         MarketplaceProduct(
             name: "CropBoost Fertilizer",
             category: .farmicides,
-            price: 35,
+            price: 1350,
             description: "Premium fertilizer for enhanced crop yield",
+            imageURL: "cropboost_fertilizer",
             rating: 4.6,
             reviewCount: 89,
             features: ["Fast-acting formula", "Suitable for all crops", "Weather resistant"],
@@ -133,9 +135,10 @@ extension MarketplaceProduct {
         MarketplaceProduct(
             name: "BugAway Insect Control",
             category: .pesticides,
-            price: 28,
-            originalPrice: 35,
+            price: 1280,
+            originalPrice: 1350,
             description: "Effective insect control solution for crops",
+            imageURL: "bugaway_insecticide",
             rating: 4.7,
             reviewCount: 156,
             features: ["Broad spectrum control", "Safe for beneficial insects", "Long-lasting protection"],
@@ -145,8 +148,9 @@ extension MarketplaceProduct {
         MarketplaceProduct(
             name: "PestShield Pro",
             category: .pesticides,
-            price: 42,
+            price: 1420,
             description: "Professional grade pest control solution",
+            imageURL: "pestshield_pro",
             rating: 4.9,
             reviewCount: 67,
             features: ["Systemic action", "Prevents resistance", "Eco-friendly"],
@@ -158,8 +162,9 @@ extension MarketplaceProduct {
         MarketplaceProduct(
             name: "OrganicGrow Compost",
             category: .manures,
-            price: 22,
+            price: 1220,
             description: "Premium organic compost for soil enrichment",
+            imageURL: "organicgrow_compost",
             rating: 4.5,
             reviewCount: 98,
             features: ["100% organic", "Improves soil structure", "Rich in nutrients"],
@@ -169,9 +174,10 @@ extension MarketplaceProduct {
         MarketplaceProduct(
             name: "FarmFresh Manure",
             category: .manures,
-            price: 18,
-            originalPrice: 25,
+            price: 1180,
+            originalPrice: 1250,
             description: "Natural farm manure for healthy soil",
+            imageURL: "farmfresh_manure",
             rating: 4.4,
             reviewCount: 142,
             features: ["Natural and organic", "Improves water retention", "Slow-release nutrients"],
@@ -183,9 +189,10 @@ extension MarketplaceProduct {
         MarketplaceProduct(
             name: "ProFarm Sprayer",
             category: .tools,
-            price: 125,
-            originalPrice: 150,
+            price: 2125,
+            originalPrice: 2150,
             description: "Professional grade crop sprayer",
+            imageURL: "profarm_sprayer",
             rating: 4.8,
             reviewCount: 45,
             features: ["Adjustable nozzle", "Ergonomic design", "Leak-proof tank"],
@@ -195,8 +202,9 @@ extension MarketplaceProduct {
         MarketplaceProduct(
             name: "SmartTill Cultivator",
             category: .tools,
-            price: 89,
+            price: 1890,
             description: "Efficient soil cultivation tool",
+            imageURL: "smarttill_cultivator",
             rating: 4.6,
             reviewCount: 73,
             features: ["Lightweight design", "Durable construction", "Easy to maintain"],
@@ -288,9 +296,6 @@ class MarketplaceManager: ObservableObject {
         return products.filter { $0.category == category }
     }
     
-    func getFeaturedProducts() -> [MarketplaceProduct] {
-        return products.filter { $0.isOnSale || $0.rating >= 4.7 }.prefix(4).map { $0 }
-    }
 }
 
 // MARK: - Shared Instance

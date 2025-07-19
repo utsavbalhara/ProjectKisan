@@ -1,0 +1,57 @@
+{
+  "fill" : {
+    "linear-gradient" : [
+      "display-p3:0.50196,0.73725,0.34902,1.00000",
+      "display-p3:0.33333,0.61961,0.36078,1.00000"
+    ]
+  },
+  "groups" : [
+    {
+      "blur-material" : null,
+      "layers" : [
+        {
+          "blend-mode" : "normal",
+          "fill" : {
+            "automatic-gradient" : "display-p3:1.00000,1.00000,1.00000,1.00000"
+          },
+          "glass" : true,
+          "image-name" : "vecteezy_leaf-green-logo-and-symbol-vector_13898753.png",
+          "name" : "vecteezy_leaf-green-logo-and-symbol-vector_13898753",
+          "position" : {
+            "scale" : 0.16,
+            "translation-in-points" : [
+              0,
+              0
+            ]
+          }
+        }
+      ],
+      "shadow" : {
+        "kind" : "neutral",
+        "opacity" : 0.5
+      },
+      "specular" : true,
+      "translucency-specializations" : [
+        {
+          "value" : {
+            "enabled" : true,
+            "value" : 0.55
+          }
+        },
+        {
+          "appearance" : "tinted",
+          "value" : {
+            "enabled" : true,
+            "value" : 0.55
+          }
+        }
+      ]
+    }
+  ],
+  "supported-platforms" : {
+    "circles" : [
+      "watchOS"
+    ],
+    "squares" : "shared"
+  }
+}

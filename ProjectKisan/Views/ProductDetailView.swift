@@ -154,9 +154,19 @@ struct ProductImageSection: View {
                 )
                 .frame(height: 320)
                 .overlay(
-                    Image(systemName: product.category.icon)
-                        .font(.system(size: 80))
-                        .foregroundColor(product.category.color)
+                    Group {
+                        if let imageName = product.imageURL, !imageName.isEmpty {
+                            Image(imageName)
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
+                                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                                .padding(40)
+                        } else {
+                            Image(systemName: product.category.icon)
+                                .font(.system(size: 80))
+                                .foregroundColor(product.category.color)
+                        }
+                    }
                 )
             
             // Sale badge
@@ -259,13 +269,13 @@ struct ProductInfoSection: View {
             // Price section
             VStack(alignment: .leading, spacing: 12) {
                 HStack(alignment: .bottom, spacing: 12) {
-                    Text("$\(product.price)")
+                    Text("₹\(product.price)")
                         .font(.largeTitle)
                         .fontWeight(.bold)
                         .foregroundColor(Color.farmColors.primary)
                     
                     if let originalPrice = product.originalPrice {
-                        Text("$\(originalPrice)")
+                        Text("₹\(originalPrice)")
                             .font(.title2)
                             .foregroundColor(Color.farmColors.textSecondary)
                             .strikethrough()
@@ -444,7 +454,7 @@ struct QuantityAndCartSection: View {
                     
                     Spacer()
                     
-                    Text("$\(product.price * quantity)")
+                    Text("₹\(product.price * quantity)")
                         .font(.title)
                         .fontWeight(.bold)
                         .foregroundColor(Color.farmColors.primary)
@@ -453,7 +463,7 @@ struct QuantityAndCartSection: View {
                 
                 if quantity > 1 {
                     HStack {
-                        Text("Price per unit: $\(product.price)")
+                        Text("Price per unit: ₹\(product.price)")
                             .font(.subheadline)
                             .foregroundColor(Color.farmColors.textSecondary)
                         

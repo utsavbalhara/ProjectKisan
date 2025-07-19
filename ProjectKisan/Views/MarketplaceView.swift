@@ -56,14 +56,6 @@ struct MarketplaceView: View {
                         // Category Pills
                         ConsistentCategoryView(selectedCategory: $selectedCategory)
                         
-                        // Featured Section - keeping this as you liked it
-                        FeaturedProductsSection(
-                            products: Array(limitedProducts.filter { $0.isOnSale || $0.rating >= 4.8 }.prefix(2)),
-                            onProductTap: { product in
-                                selectedProduct = product
-                            }
-                        )
-                        
                         // Products Section
                         VStack(alignment: .leading, spacing: 20) {
                             HStack {
@@ -248,156 +240,6 @@ struct ConsistentCategoryPill: View {
     }
 }
 
-// MARK: - Featured Products Section
-struct FeaturedProductsSection: View {
-    let products: [MarketplaceProduct]
-    let onProductTap: (MarketplaceProduct) -> Void
-    
-    var body: some View {
-        if !products.isEmpty {
-            VStack(alignment: .leading, spacing: 16) {
-                HStack {
-                    Text("Featured")
-                        .font(.title2)
-                        .fontWeight(.bold)
-                        .foregroundStyle(.primary)
-                    
-                    Spacer()
-                    
-                    Text("Special offers")
-                        .font(.subheadline)
-                        .foregroundStyle(.secondary)
-                }
-                .padding(.horizontal, 20)
-                
-                ScrollView(.horizontal, showsIndicators: false) {
-                    HStack(spacing: 16) {
-                        ForEach(products) { product in
-                            FeaturedProductCard(product: product) {
-                                onProductTap(product)
-                            }
-                        }
-                    }
-                    .padding(.horizontal, 20)
-                }
-            }
-        }
-    }
-}
-
-// MARK: - Featured Product Card
-struct FeaturedProductCard: View {
-    let product: MarketplaceProduct
-    let onTap: () -> Void
-    @StateObject private var productManager = ProductManager.shared
-    
-    var body: some View {
-        Button(action: onTap) {
-            VStack(alignment: .leading, spacing: 12) {
-                // Product image with gradient overlay
-                ZStack {
-                    RoundedRectangle(cornerRadius: 16)
-                        .fill(
-                            LinearGradient(
-                                colors: [
-                                    product.category.color.opacity(0.8),
-                                    product.category.color.opacity(0.4)
-                                ],
-                                startPoint: .topLeading,
-                                endPoint: .bottomTrailing
-                            )
-                        )
-                        .frame(width: 280, height: 140)
-                    
-                    VStack {
-                        HStack {
-                            VStack(alignment: .leading, spacing: 4) {
-                                if product.isOnSale {
-                                    Text("SAVE \(product.discountPercentage!)%")
-                                        .font(.caption)
-                                        .fontWeight(.bold)
-                                        .foregroundStyle(.white)
-                                        .padding(.horizontal, 8)
-                                        .padding(.vertical, 4)
-                                        .background(Color.red)
-                                        .clipShape(Capsule())
-                                }
-                                
-                                Text(product.name)
-                                    .font(.headline)
-                                    .fontWeight(.bold)
-                                    .foregroundStyle(.white)
-                                    .lineLimit(2)
-                                
-                                Text("by \(product.brand)")
-                                    .font(.subheadline)
-                                    .foregroundStyle(.white.opacity(0.8))
-                            }
-                            
-                            Spacer()
-                            
-                            Image(systemName: product.category.icon)
-                                .font(.system(size: 32))
-                                .foregroundStyle(.white.opacity(0.3))
-                        }
-                        .padding(.horizontal, 16)
-                        .padding(.top, 16)
-                        
-                        Spacer()
-                        
-                        HStack {
-                            VStack(alignment: .leading, spacing: 2) {
-                                HStack(spacing: 4) {
-                                    Text("$\(product.price)")
-                                        .font(.title2)
-                                        .fontWeight(.bold)
-                                        .foregroundStyle(.white)
-                                    
-                                    if let originalPrice = product.originalPrice {
-                                        Text("$\(originalPrice)")
-                                            .font(.caption)
-                                            .strikethrough()
-                                            .foregroundStyle(.white.opacity(0.7))
-                                    }
-                                }
-                                
-                                HStack(spacing: 2) {
-                                    ForEach(0..<5) { index in
-                                        Image(systemName: index < Int(product.rating) ? "star.fill" : "star")
-                                            .font(.caption2)
-                                            .foregroundStyle(.yellow)
-                                    }
-                                    
-                                    Text("(\(product.reviewCount))")
-                                        .font(.caption2)
-                                        .foregroundStyle(.white.opacity(0.8))
-                                }
-                            }
-                            
-                            Spacer()
-                            
-                            Button(action: {
-                                withAnimation(.spring(response: 0.3, dampingFraction: 0.6)) {
-                                    productManager.addToCart(product.toProduct())
-                                }
-                            }) {
-                                Image(systemName: "bag.fill")
-                                    .font(.system(size: 16, weight: .medium))
-                                    .foregroundStyle(.white)
-                                    .frame(width: 36, height: 36)
-                                    .background(Color.black.opacity(0.2))
-                                    .clipShape(Circle())
-                            }
-                        }
-                        .padding(.horizontal, 16)
-                        .padding(.bottom, 16)
-                    }
-                }
-            }
-        }
-        .buttonStyle(PlainButtonStyle())
-    }
-}
 
 // MARK: - Consistent Product Grid
 struct ConsistentProductGrid: View {
@@ -432,10 +274,16 @@ struct ConsistentProductCard: View {
     @State private var isPressed = false
     
     var body: some View {
-        Button(action: onTap) {
-            VStack(alignment: .leading, spacing: 16) {
+        Button(action: {
+            isPressed = true
+            onTap()
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                isPressed = false
+            }
+        }) {
+            VStack(alignment: .leading, spacing: 12) {
                 // Product Image
-                ZStack {
+                ZStack(alignment: .topTrailing) {
                     RoundedRectangle(cornerRadius: 16)
                         .fill(
                             LinearGradient(
@@ -447,36 +295,35 @@ struct ConsistentProductCard: View {
                                 endPoint: .bottomTrailing
                             )
                         )
-                        .frame(height: 120)
+                        .aspectRatio(1, contentMode: .fit) // Make it a square
                     
-                    Image(systemName: product.category.icon)
-                        .font(.system(size: 36))
-                        .foregroundColor(product.category.color)
+                    if let imageName = product.imageURL, !imageName.isEmpty {
+                        Image(imageName)
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    } else {
+                        Image(systemName: product.category.icon)
+                            .font(.system(size: 48))
+                            .foregroundColor(product.category.color.opacity(0.7))
+                            .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    }
                     
                     // Sale Badge
                     if product.isOnSale {
-                        VStack {
-                            HStack {
-                                Spacer()
-                                
-                                Text("-\(product.discountPercentage!)%")
-                                    .font(.caption2)
-                                    .fontWeight(.bold)
-                                    .foregroundColor(.white)
-                                    .padding(.horizontal, 6)
-                                    .padding(.vertical, 3)
-                                    .background(Color.red)
-                                    .clipShape(Capsule())
-                            }
-                            .padding(.top, 8)
-                            .padding(.trailing, 8)
-                            
-                            Spacer()
-                        }
+                        Text("-\(product.discountPercentage!)%")
+                            .font(.caption2)
+                            .fontWeight(.bold)
+                            .foregroundColor(.white)
+                            .padding(.horizontal, 8)
+                            .padding(.vertical, 4)
+                            .background(Color.red)
+                            .clipShape(Capsule())
+                            .padding(8)
                     }
                 }
                 
-                VStack(alignment: .leading, spacing: 8) {
+                VStack(alignment: .leading, spacing: 6) {
                     Text(product.name)
                         .font(.subheadline)
                         .fontWeight(.semibold)
@@ -489,13 +336,13 @@ struct ConsistentProductCard: View {
                         .foregroundColor(Color.farmColors.textSecondary)
                     
                     HStack {
-                        Text("$\(product.price)")
+                        Text("₹\(product.price)")
                             .font(.headline)
                             .fontWeight(.bold)
                             .foregroundColor(Color.farmColors.primary)
                         
                         if let originalPrice = product.originalPrice {
-                            Text("$\(originalPrice)")
+                            Text("₹\(originalPrice)")
                                 .font(.caption)
                                 .foregroundColor(Color.farmColors.textSecondary)
                                 .strikethrough()
@@ -504,7 +351,7 @@ struct ConsistentProductCard: View {
                         Spacer()
                     }
                     
-                    HStack {
+                    HStack(spacing: 4) {
                         ForEach(0..<5) { index in
                             Image(systemName: index < Int(product.rating) ? "star.fill" : "star")
                                 .font(.caption2)
@@ -518,7 +365,6 @@ struct ConsistentProductCard: View {
                         Spacer()
                     }
                 }
-                .padding(.horizontal, 12)
                 
                 Button(action: {
                     withAnimation(.spring(response: 0.3, dampingFraction: 0.6)) {
@@ -537,30 +383,19 @@ struct ConsistentProductCard: View {
                     .frame(maxWidth: .infinity)
                     .padding(.vertical, 10)
                     .background(Color.farmColors.primary)
-                    .cornerRadius(10)
+                    .cornerRadius(12) // Slightly more rounded
                 }
-                .padding(.horizontal, 12)
-                .padding(.bottom, 16)
             }
+            .padding(12) // Add padding to the entire card content
         }
         .buttonStyle(PlainButtonStyle())
         .background(
             RoundedRectangle(cornerRadius: 20)
                 .fill(.ultraThinMaterial)
-                .shadow(color: Color.farmColors.shadow, radius: 8, x: 0, y: 2)
+                .shadow(color: Color.farmColors.shadow.opacity(0.5), radius: 8, x: 0, y: 4)
         )
-        .scaleEffect(isPressed ? 0.95 : 1.0)
-        .onTapGesture {
-            withAnimation(.spring(response: 0.2, dampingFraction: 0.5)) {
-                isPressed = true
-            }
-            
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                withAnimation(.spring(response: 0.2, dampingFraction: 0.5)) {
-                    isPressed = false
-                }
-            }
-        }
+        .scaleEffect(isPressed ? 0.96 : 1.0)
+        .animation(.spring(response: 0.4, dampingFraction: 0.6), value: isPressed)
     }
 }
 
@@ -610,12 +445,12 @@ struct ConsistentCartButton: View {
                         .font(.caption2)
                         .fontWeight(.bold)
                         .foregroundColor(.white)
-                        .frame(minWidth: 18, minHeight: 18)
+                        .frame(width: 18, height: 18)
                         .background(Color.red)
                         .clipShape(Circle())
                         .overlay(
                             Circle()
-                                .stroke(Color.white, lineWidth: 2)
+                                .stroke(Color.farmColors.backgroundLight, lineWidth: 2)
                         )
                         .offset(x: 12, y: -12)
                 }
