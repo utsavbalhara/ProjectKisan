@@ -24,32 +24,32 @@ struct FeedView: View {
                     VStack(spacing: 24) {
                         // Weather Dashboard Section
                         VStack(spacing: 16) {
-                            HStack {
-                                VStack(alignment: .leading, spacing: 4) {
-                                    Text("Weather")
-                                        .font(.title2)
-                                        .fontWeight(.bold)
-                                        .foregroundColor(Color.farmColors.textPrimary)
-                                    
-                                    Text("Real-time conditions for optimal farming")
-                                        .font(.subheadline)
-                                        .foregroundColor(Color.farmColors.textSecondary)
-                                }
-                                
-                                Spacer()
-                                
-                                Button(action: {
-                                    // Refresh weather data
-                                    withAnimation(.easeInOut(duration: 0.3)) {
-                                        // In a real app, this would refresh the weather data
-                                    }
-                                }) {
-                                    Image(systemName: "arrow.clockwise")
-                                        .font(.title3)
-                                        .foregroundColor(Color.farmColors.primary)
-                                }
-                            }
-                            .padding(.horizontal, 16)
+//                            HStack {
+//                                VStack(alignment: .leading, spacing: 4) {
+//                                    Text("Weather")
+//                                        .font(.title2)
+//                                        .fontWeight(.bold)
+//                                        .foregroundColor(Color.farmColors.textPrimary)
+//                                    
+//                                    Text("Real-time conditions for optimal farming")
+//                                        .font(.subheadline)
+//                                        .foregroundColor(Color.farmColors.textSecondary)
+//                                }
+//                                
+//                                Spacer()
+//                                
+//                                Button(action: {
+//                                    // Refresh weather data
+//                                    withAnimation(.easeInOut(duration: 0.3)) {
+//                                        // In a real app, this would refresh the weather data
+//                                    }
+//                                }) {
+//                                    Image(systemName: "arrow.clockwise")
+//                                        .font(.title3)
+//                                        .foregroundColor(Color.farmColors.primary)
+//                                }
+//                            }
+//                            .padding(.horizontal, 16)
                             
                             CompactWeatherDashboard(weather: comprehensiveWeather)
                         }

@@ -92,7 +92,7 @@ struct DetailedWeatherCard: View {
         .background(
             RoundedRectangle(cornerRadius: 20)
                 .fill(Color.farmColors.surface)
-                .shadow(color: Color.farmColors.shadow, radius: 6, x: 0, y: 3)
+                .shadow(color: Color.black.opacity(0.05), radius: 6)
         )
     }
 }
@@ -155,7 +155,7 @@ struct WeatherMetricsGrid: View {
         .background(
             RoundedRectangle(cornerRadius: 16)
                 .fill(Color.farmColors.surface)
-                .shadow(color: Color.farmColors.shadow, radius: 4, x: 0, y: 2)
+                .shadow(color: Color.black.opacity(0.05), radius: 6)
         )
     }
     
@@ -280,7 +280,7 @@ struct SunInformationCard: View {
         .background(
             RoundedRectangle(cornerRadius: 16)
                 .fill(Color.farmColors.surface)
-                .shadow(color: Color.farmColors.shadow, radius: 4, x: 0, y: 2)
+                .shadow(color: Color.black.opacity(0.05), radius: 6)
         )
     }
 }

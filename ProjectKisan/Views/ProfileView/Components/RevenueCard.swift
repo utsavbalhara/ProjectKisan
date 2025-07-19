@@ -39,6 +39,6 @@ struct RevenueCard: View {
             RoundedRectangle(cornerRadius: 20)
                 .stroke(Color.farmColors.secondary.opacity(0.2), lineWidth: 1)
         )
-        .shadow(color: Color.black.opacity(0.1), radius: 15, x: 0, y: 8)
+        .shadow(color: Color.black.opacity(0.05), radius: 6)
     }
 }

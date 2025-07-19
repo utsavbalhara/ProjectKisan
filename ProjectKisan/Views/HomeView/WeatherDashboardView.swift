@@ -48,7 +48,7 @@ struct WeatherDashboardView: View {
                 .background(
                     RoundedRectangle(cornerRadius: 20)
                         .fill(Color.farmColors.surface)
-                        .shadow(color: Color.farmColors.shadow, radius: 4, x: 0, y: 2)
+                        .shadow(color: Color.black.opacity(0.05), radius: 6)
                 )
                 
                 // Tab Content
@@ -180,7 +180,7 @@ struct MainWeatherCard: View {
         .background(
             RoundedRectangle(cornerRadius: 24)
                 .fill(Color.farmColors.surface)
-                .shadow(color: Color.farmColors.shadow, radius: 8, x: 0, y: 4)
+                .shadow(color: Color.black.opacity(0.05), radius: 6)
         )
     }
 }
@@ -348,7 +348,7 @@ struct WeatherAlertCard: View {
                     RoundedRectangle(cornerRadius: 16)
                         .stroke(Color(hex: alert.severity.color).opacity(0.3), lineWidth: 1)
                 )
-                .shadow(color: Color.farmColors.shadow, radius: 4, x: 0, y: 2)
+                .shadow(color: Color.black.opacity(0.05), radius: 6)
         )
     }
 }

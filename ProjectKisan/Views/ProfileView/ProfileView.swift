@@ -132,7 +132,8 @@ struct ProfileHeaderSection: View {
                         lineWidth: 3
                     )
             )
-            .shadow(color: Color.farmColors.primary.opacity(0.3), radius: 10, x: 0, y: 5)
+            .shadow(color: Color.black.opacity(0.05), radius: 6)
+            
             
             // Farmer Info - Plain Text (No Card)
             VStack(spacing: 12) {
@@ -207,7 +208,7 @@ struct OrderHistoryCard: View {
             RoundedRectangle(cornerRadius: 20)
                 .stroke(Color.farmColors.primary.opacity(0.2), lineWidth: 1)
         )
-        .shadow(color: Color.farmColors.shadow.opacity(0.1), radius: 15, x: 0, y: 8)
+        .shadow(color: Color.black.opacity(0.05), radius: 6)
     }
 }
 
@@ -308,7 +309,7 @@ struct IntegratedOrderHistoryCard: View {
             RoundedRectangle(cornerRadius: 20)
                 .stroke(Color.farmColors.primary.opacity(0.2), lineWidth: 1)
         )
-        .shadow(color: Color.farmColors.shadow.opacity(0.1), radius: 15, x: 0, y: 8)
+        .shadow(color: Color.black.opacity(0.05), radius: 6)
     }
 }
 

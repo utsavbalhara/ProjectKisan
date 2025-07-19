@@ -84,7 +84,7 @@ struct HourlyForecastCard: View {
                     RoundedRectangle(cornerRadius: 16)
                         .stroke(isFirst ? Color.farmColors.primary.opacity(0.3) : Color.clear, lineWidth: 1)
                 )
-                .shadow(color: Color.farmColors.shadow, radius: 4, x: 0, y: 2)
+                .shadow(color: Color.black.opacity(0.05), radius: 6)
         )
         .frame(width: 80)
     }
@@ -174,7 +174,7 @@ struct DetailCard: View {
         .background(
             RoundedRectangle(cornerRadius: 12)
                 .fill(Color.farmColors.surface)
-                .shadow(color: Color.farmColors.shadow, radius: 2, x: 0, y: 1)
+                .shadow(color: Color.black.opacity(0.05), radius: 6)
         )
     }
 }
@@ -258,7 +258,7 @@ struct SunTimesCard: View {
         .background(
             RoundedRectangle(cornerRadius: 16)
                 .fill(Color.farmColors.surface)
-                .shadow(color: Color.farmColors.shadow, radius: 4, x: 0, y: 2)
+                .shadow(color: Color.black.opacity(0.05), radius: 6)
         )
     }
 }
@@ -332,7 +332,7 @@ struct AirQualityCard: View {
         .background(
             RoundedRectangle(cornerRadius: 16)
                 .fill(Color.farmColors.surface)
-                .shadow(color: Color.farmColors.shadow, radius: 4, x: 0, y: 2)
+                .shadow(color: Color.black.opacity(0.05), radius: 6)
         )
     }
 }
@@ -482,7 +482,7 @@ struct FarmMetricCard: View {
         .background(
             RoundedRectangle(cornerRadius: 12)
                 .fill(Color.farmColors.surface)
-                .shadow(color: Color.farmColors.shadow, radius: 2, x: 0, y: 1)
+                .shadow(color: Color.black.opacity(0.05), radius: 6)
         )
     }
 }
@@ -528,7 +528,7 @@ struct IrrigationRecommendationCard: View {
                     RoundedRectangle(cornerRadius: 16)
                         .stroke(Color(hex: recommendation.color).opacity(0.3), lineWidth: 1)
                 )
-                .shadow(color: Color.farmColors.shadow, radius: 4, x: 0, y: 2)
+                .shadow(color: Color.black.opacity(0.05), radius: 6)
         )
     }
     
@@ -600,7 +600,7 @@ struct SprayingConditionsCard: View {
                     RoundedRectangle(cornerRadius: 16)
                         .stroke(Color(hex: conditions.color).opacity(0.3), lineWidth: 1)
                 )
-                .shadow(color: Color.farmColors.shadow, radius: 4, x: 0, y: 2)
+                .shadow(color: Color.black.opacity(0.05), radius: 6)
         )
     }
     
